@@ -172,7 +172,7 @@ async def help(client, message):
        InlineKeyboardButton('• ᴄʟᴏsᴇ •', callback_data='close_data')
     ]]
     reply_markup = InlineKeyboardMarkup(btn)
-    await message.send_text(
+    await message.reply_text(
         text=script.HELP2_TXT,
         reply_markup=reply_markup
     )
@@ -188,7 +188,7 @@ async def about(client, message):
     ]]
     reply_markup = InlineKeyboardMarkup(buttons)
     me2 = (await client.get_me()).mention
-    await message.send_text(
+    await message.reply_text(
         text=script.ABOUT_TXT.format(me2, me2, get_readable_time(time.time() - StartTime), __version__),
         reply_markup=reply_markup
     )
