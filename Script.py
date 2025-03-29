@@ -1,8 +1,8 @@
 class script(object):
-    START_TXT = """<b>Hᴇʏ {}, \n\nɪ ᴀᴍ ᴀɴ ᴀᴅᴠᴀɴᴄᴇ ꜰɪʟᴇ ᴛᴏ ʟɪɴᴋ ɢᴇɴᴇʀᴀᴛᴏʀ ʙᴏᴛ.\n\nᴊᴜꜱᴛ ꜱᴇɴᴅ ᴍᴇ ᴀɴʏ ꜰɪʟᴇ ᴀɴᴅ ᴠɪᴅᴇᴏ ɢᴇᴛ ᴀ ᴅɪʀᴇᴄᴛ ᴅᴏᴡɴʟᴏᴀᴅ ʟɪɴᴋ ᴀɴᴅ ꜱᴛʀᴇᴀᴍᴀʙʟᴇ ʟɪɴᴋ.\n\n<blockquote><a href=https://t.me/{}?startchannel&admin=post_messages+edit_messages+delete_messages>➜ 𝖠𝖽𝖽 𝖳𝗈 𝖢𝗁𝖺𝗇𝗇𝖾𝗅</a></blockquote>\n\nᴍᴀɪɴᴛᴀɪɴᴇᴅ ʙʏ :  <a href=https://t.me/AV_BOTz_UPDATE>ᴀᴠ ʙᴏᴛᴢ</a></b>"""
+    START_TXT = """<b>Hᴇʏ {}, \n\nɪ ᴀᴍ ᴀɴ ᴀᴅᴠᴀɴᴄᴇ ꜰɪʟᴇ ᴛᴏ ʟɪɴᴋ ɢᴇɴᴇʀᴀᴛᴏʀ ʙᴏᴛ.\n\nᴊᴜꜱᴛ ꜱᴇɴᴅ ᴍᴇ ᴀɴʏ ꜰɪʟᴇ ᴀɴᴅ ᴠɪᴅᴇᴏ ɢᴇᴛ ᴀ ᴅɪʀᴇᴄᴛ ᴅᴏᴡɴʟᴏᴀᴅ ʟɪɴᴋ ᴀɴᴅ ꜱᴛʀᴇᴀᴍᴀʙʟᴇ ʟɪɴᴋ.\n\n<blockquote><a href=https://t.me/{}?startchannel&admin=post_messages+edit_messages+delete_messages>➜ 𝖠𝖽𝖽 𝖳𝗈 𝖢𝗁𝖺𝗇𝗇𝖾𝗅</a></blockquote></b>"""
 
     RESTART_TXT = """
-<b>Bᴏᴛ Rᴇsᴛᴀʀᴛᴇᴅ !
+<b>FILE TO LINK Bᴏᴛ Rᴇsᴛᴀʀᴛᴇᴅ !
 
 📅 Dᴀᴛᴇ : <code>{}</code>
 ⏰ Tɪᴍᴇ : <code>{}</code>
@@ -17,8 +17,7 @@ class script(object):
     
     ADMIN_CMD_TXT = """<b>
     
-Olay aman vishwakarma ne add Kiya hai 
-
+OLNY AMANI NE ADD KIYA HAI
 /broadcast send massage users 
 /users To get users details
 /ban user/channel id dan
@@ -54,10 +53,10 @@ Cʜᴀɴɴᴇʟ Uꜱᴀɢᴇ:
 🔞 ᴀᴅᴜʟᴛ ᴄᴏɴᴛᴇɴᴛ sᴛʀɪᴄᴛʟʏ ᴘʀᴏʜɪʙɪᴛᴇᴅ.
 
 📮 Hᴇʟᴘ & Sᴜᴘᴘᴏʀᴛ:
-• Uᴘᴅᴀᴛᴇꜱ: @AV_BOTz_UPDATE
-• Sᴜᴘᴘᴏʀᴛ: @AV_SUPPORT_GROUP
+• Uᴘᴅᴀᴛᴇꜱ: @MSLANDERS
+• Sᴜᴘᴘᴏʀᴛ: @MSLANDERS_HELP
 
- <u><i>ʀᴇᴘᴏʀᴛ ʙᴜɢs ᴛᴏ  <a href='https://t.me/AV_OWNER_BOT'>ᴅᴇᴠᴇʟᴏᴘᴇʀ</a></u></i></b>"""
+ <u><i>ʀᴇᴘᴏʀᴛ ʙᴜɢs ᴛᴏ  <a href='https://t.me/mslanderstalk_bot'>ᴅᴇᴠᴇʟᴏᴘᴇʀ</a></u></i></b>"""
 
 #Dont Remove My Credit @AV_BOTz_UPDATE 
 #This Repo Is By @BOT_OWNER26 
@@ -70,9 +69,8 @@ Nᴀᴍᴇ - {}"""
     ABOUT_TXT = """<b>╔════❰ {} ❱═══════❍
 ║╭━━━━━━━━━━━━━━━━━━➣
 ║┣⪼🤖ᴍʏ ɴᴀᴍᴇ : {}
-║┣⪼👦ᴅᴇᴠᴇʟᴏᴘᴇʀ : <a href='https://t.me/AV_OWNER_BOT'>ᴀᴠ ᴄʜᴀᴛ ᴏᴡɴᴇʀ</a>
-║┣⪼❣️ᴜᴘᴅᴀᴛᴇ : <a href=https://t.me/AV_BOTz_UPDATE>ᴀᴠ ʙᴏᴛᴢ</a>
-║┣⪼💻sᴏᴜʀᴄᴇ ᴄᴏᴅᴇ : <a href=https://github.com/Botsthe/AV-FILE-TO-LINK>ʀᴇᴘᴏ</a>
+║┣⪼👦ᴅᴇᴠᴇʟᴏᴘᴇʀ : <a href='https://t.me/mslanderstalk_bot'>ᴀᴠ ᴄʜᴀᴛ ᴏᴡɴᴇʀ</a>
+║┣⪼❣️ᴜᴘᴅᴀᴛᴇ : <a href=https://t.me/NSLANDERS>MSLANDERS</a>
 ║┣⪼⏲️ʙᴏᴛ ᴜᴘᴛɪᴍᴇ :- {}
 ║┣⪼📡Hᴏsᴛᴇᴅ ᴏɴ : ᴋᴏʏᴇʙ 
 ║┣⪼🗣️ʟᴀɴɢᴜᴀɢᴇ : ᴘʏᴛʜᴏɴ 
@@ -90,7 +88,7 @@ Nᴀᴍᴇ - {}"""
     CAPTION_TXT = """
 <i><u>𝗬𝗼𝘂𝗿 𝗟𝗶𝗻𝗸 𝗚𝗲𝗻𝗲𝗿𝗮𝘁𝗲𝗱 !</u></i>
 
-<b>📧 ꜰɪʟᴇ ɴᴀᴍᴇ :- </b> <i><a href=https://t.me/av_botz_updated>{}</a></i>
+<b>📧 ꜰɪʟᴇ ɴᴀᴍᴇ :- </b> <i><a href=https://t.me/mslanders>{}</a></i>
 
 <b>📦 ꜰɪʟᴇ sɪᴢᴇ :- </b> <i>{}</i>
 
