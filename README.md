@@ -50,7 +50,6 @@ If you encounter any issues deploying the bot, feel free to seek assistance in o
 * `FQDN` : Your Server App Link With https:// and in last make sure one / is given.
 * `PORT` : The port that you want your webapp to be listened to. Defaults to `2626`
 * `BANNED_CHANNELS` : Put IDs of Banned Channels where bot will not work. You can add multiple IDs & separate with <kbd>Space</kbd>.
-
 </details>
 
 ### ALL COMMANDS
