@@ -36,7 +36,7 @@ ENABLE_LIMIT = environ.get("ENABLE_LIMIT", False) # True and False
 RATE_LIMIT_TIMEOUT = int(environ.get("RATE_LIMIT_TIMEOUT", "600"))  # limit time 600 = 10 minutes 
 MAX_FILES = int(environ.get("MAX_FILES", "10"))  # file limit 10 file Olay
 
-# Environment Configs
+# short Link  information
 SHORTLINK = environ.get('SHORTLINK', False) # True and False
 SHORTLINK_URL = environ.get('SHORTLINK_URL', 'linkmonetizer.in')
 SHORTLINK_API = environ.get('SHORTLINK_API', '63558804ef8ee5aa3522375d7e5762c0d40ded46')
