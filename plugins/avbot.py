@@ -2,8 +2,9 @@ from pyrogram.errors import UserNotParticipant, FloodWait
 from pyrogram.enums.parse_mode import ParseMode
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 from Script import script
-from info import AUTH_PICS, AUTH_CHANNEL, ENABLE_LIMIT, RATE_LIMIT_TIMEOUT, MAX_FILES, BAN_ALERT, ADMINS
+from info import AUTH_PICS, AUTH_CHANNEL, ENABLE_LIMIT, RATE_LIMIT_TIMEOUT, MAX_FILES, BAN_ALERT, ADMINS, SHORTLINK_URL, SHORTLINK_API
 import asyncio, time
+from shortzy import Shortzy
 from typing import (
     Union
 )
@@ -105,4 +106,9 @@ async def is_user_allowed(user_id):
 #Dont Remove My Credit @AV_BOTz_UPDATE 
 #This Repo Is By @BOT_OWNER26 
 # For Any Kind Of Error Ask Us In Support Group @AV_SUPPORT_GROUP
+    
+async def get_shortlink(link):
+    shortzy = Shortzy(api_key=SHORTLINK_API, base_site=SHORTLINK_URL)
+    link = await shortzy.convert(link)
+    return link
     
