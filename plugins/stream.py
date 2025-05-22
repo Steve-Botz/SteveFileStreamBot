@@ -9,7 +9,7 @@ from utils import get_size
 from Script import script
 from pyrogram.errors import FloodWait
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
-from plugins.avbot import is_user_joined, is_user_allowed
+from plugins.avbot import is_user_joined, is_user_allowed, get_shortlink
 
 #Dont Remove My Credit @AV_BOTz_UPDATE 
 #This Repo Is By @BOT_OWNER26 
@@ -42,12 +42,18 @@ async def private_receive_handler(c: Client, m: Message):
 
     try:
         msg = await m.forward(chat_id=BIN_CHANNEL)
+        if SHORTLINK == False:
         
-        stream = f"{URL}watch/{msg.id}?hash={get_hash(msg)}"
-        download = f"{URL}{msg.id}?hash={get_hash(msg)}"
-        file_link = f"https://t.me/{BOT_USERNAME}?start=file_{msg.id}"
-        share_link = f"https://t.me/share/url?url={file_link}"
-        
+            stream = f"{URL}watch/{msg.id}?hash={get_hash(msg)}"
+            download = f"{URL}{msg.id}?hash={get_hash(msg)}"
+            file_link = f"https://t.me/{BOT_USERNAME}?start=file_{msg.id}"
+            share_link = f"https://t.me/share/url?url={file_link}"
+        else:
+            stream = await get_shortlink(f"{URL}watch/{msg.id}?hash={get_hash(msg)}")
+            download = await get_shortlink(f"{URL}{msg.id}?hash={get_hash(msg)}")
+            file_link = await get_shortlink(f"https://t.me/{BOT_USERNAME}?start=file_{msg.id}")
+            share_link = await get_shortlink(f"https://t.me/share/url?url={file_link}")       
+       
         await msg.reply_text(
             text=f"Requested By: [{m.from_user.first_name}](tg://user?id={m.from_user.id})\nUser ID: {m.from_user.id}\nStream Link: {stream}",
             disable_web_page_preview=True, quote=True
