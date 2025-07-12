@@ -2,6 +2,10 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/Botsthe/AV-FILE-TO-LINK-PRO?color=green)
 ![GitHub](https://img.shields.io/github/license/Botsthe/AV-FILE-TO-LINK-PRO?color=green)
 
+![Maintenance](https://img.shields.io/badge/🛠️%20Repo%20Status-Under%20Maintenance-orange?style=for-the-badge)
+
+> ⚠️ **This repository is currently under maintenance. Please wait for updates.**
+
 ### Demo Bot
 
 Here is our Demo bot -
