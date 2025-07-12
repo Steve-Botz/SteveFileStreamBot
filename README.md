@@ -110,7 +110,6 @@ python3 bot.py
 
 <details><summary>Tap On Me For Bot Features</summary>
 
-
 - Has a custom Start-up pic.
 - Force subscribe available.
 - Superfast download and stream links.
