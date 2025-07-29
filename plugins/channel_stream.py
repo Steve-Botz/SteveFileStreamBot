@@ -3,7 +3,7 @@ import os
 import random
 from web.utils.file_properties import get_hash
 from pyrogram import Client, filters, enums
-from info import BIN_CHANNEL, URL, CHANNEL, BOT_USERNAME, IS_SHORTLINK, CHANNEL_FILE_CAPTION, HOW_TO_OPEN
+from info import BIN_CHANNEL, URL, CHANNEL, BOT_USERNAME, IS_SHORTLINK, HOW_TO_OPEN
 from utils import get_size, get_shortlink
 from Script import script
 from database.users_db import db
@@ -46,7 +46,6 @@ async def channel_receive_handler(bot: Client, broadcast: Message):
             text=f"**Channel Name:** `{broadcast.chat.title}`\n**CHANNEL ID:** `{broadcast.chat.id}`\n**Rᴇǫᴜᴇsᴛ ᴜʀʟ:** {stream}",
             quote=True
         )
-        new_caption = CHANNEL_FILE_CAPTION.format(CHANNEL, file_name)
         buttons_list = [
             [InlineKeyboardButton("🔺 ꜱᴛʀᴇᴀᴍ", url=stream),
              InlineKeyboardButton("ᴅᴏᴡɴʟᴏᴀᴅ 🔻", url=download)]
@@ -60,7 +59,6 @@ async def channel_receive_handler(bot: Client, broadcast: Message):
         await bot.edit_message_caption(
             chat_id=broadcast.chat.id,
             message_id=broadcast.id,
-            caption=new_caption,
             reply_markup=buttons,
             parse_mode=enums.ParseMode.HTML
         )
