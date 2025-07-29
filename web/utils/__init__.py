@@ -5,4 +5,4 @@ import time
 # For Any Kind Of Error Ask Us In Support Group @AV_SUPPORT_GROUP
 
 StartTime = time.time()
-__version__ = 2.6
+__version__ = "v4.6.00"
