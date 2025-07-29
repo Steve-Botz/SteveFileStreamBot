@@ -1,88 +1,105 @@
-from pyrogram.errors import UserNotParticipant, FloodWait
-from pyrogram.enums.parse_mode import ParseMode
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
+from pyrogram.errors import UserNotParticipant, ChatAdminRequired
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+from pyrogram.enums import ParseMode
 from Script import script
-from info import AUTH_PICS, AUTH_CHANNEL, ENABLE_LIMIT, RATE_LIMIT_TIMEOUT, MAX_FILES, BAN_ALERT, ADMINS, SHORTLINK_URL, SHORTLINK_API
+from utils import check_verification, get_token
+from info import AUTH_PICS, BATCH_VERIFY, VERIFY, HOW_TO_VERIFY, AUTH_CHANNEL, ENABLE_LIMIT, RATE_LIMIT_TIMEOUT, MAX_FILES, BOT_USERNAME
 import asyncio, time
-from shortzy import Shortzy
-from typing import (
-    Union
-)
 
 rate_limit = {}
 
-
-#Dont Remove My Credit @AV_BOTz_UPDATE 
-#This Repo Is By @BOT_OWNER26 
-# For Any Kind Of Error Ask Us In Support Group @AV_SUPPORT_GROUP
-
-
-async def get_invite_link(bot, chat_id: Union[str, int]):
-    try:
-        invite_link = await bot.create_chat_invite_link(chat_id=chat_id)
-        return invite_link
-    except FloodWait as e:
-        print(f"Sleep of {e.value}s caused by FloodWait ...")
-        await asyncio.sleep(e.value)
-        return await get_invite_link(bot, chat_id)
-        
-async def is_user_joined(bot, message: Message):
-    if AUTH_CHANNEL and AUTH_CHANNEL.startswith("-100"):
-        channel_chat_id = int(AUTH_CHANNEL)    # When id startswith with -100
-    elif AUTH_CHANNEL and (not AUTH_CHANNEL.startswith("-100")):
-        channel_chat_id = AUTH_CHANNEL     # When id not startswith -100
-    else:
-        return 200
-    try:
-        user = await bot.get_chat_member(chat_id=channel_chat_id, user_id=message.from_user.id)
-        if user.status == "BANNED":
-            await message.reply_text(
-                text=BAN_ALERT.format(ADMINS),
-                parse_mode=ParseMode.MARKDOWN,
-                disable_web_page_preview=True
-            )
-            return False
-    except UserNotParticipant:
-        invite_link = await get_invite_link(bot, chat_id=channel_chat_id)
-        if AUTH_PICS:
-            ver = await message.reply_photo(
-                photo=AUTH_PICS,
-                caption=script.AUTH_TXT.format(message.from_user.mention),
-                parse_mode=ParseMode.HTML,
-                reply_markup=InlineKeyboardMarkup(
-                [[
-                    InlineKeyboardButton("❆ Jᴏɪɴ Oᴜʀ Cʜᴀɴɴᴇʟ ❆", url=invite_link.invite_link)
-                ]]
-                )
-            )
-        else:
-            ver = await message.reply_text(
-                text=script.AUTH_TXT.format(message.from_user.mention),
-                reply_markup=InlineKeyboardMarkup(
-                    [[
-                        InlineKeyboardButton("❆ Jᴏɪɴ Oᴜʀ Cʜᴀɴɴᴇʟ ❆", url=invite_link.invite_link)
-                    ]]
-                ),
-                parse_mode=ParseMode.HTML
-            )
-        await asyncio.sleep(30)
+async def is_user_joined(bot, message: Message) -> bool:
+    user_id = message.from_user.id
+    bot_user = await bot.get_me()    
+    not_joined_channels = []
+    for channel_id in AUTH_CHANNEL:
         try:
-            await ver.delete()
-            await message.delete()
-        except Exception:
-            pass
+            await bot.get_chat_member(channel_id, user_id)
+        except UserNotParticipant:
+            try:
+                chat = await bot.get_chat(channel_id)
+                try:
+                    invite_link = await bot.export_chat_invite_link(channel_id)
+                except ChatAdminRequired:
+                    await message.reply_text(
+                        text = (
+                            "<i>🔒 Bᴏᴛ ɪs ɴᴏᴛ ᴀɴ ᴀᴅᴍɪɴ ɪɴ ᴛʜɪs ᴄʜᴀɴɴᴇʟ.\n"
+                            "Pʟᴇᴀsᴇ ᴄᴏɴᴛᴀᴄᴛ ᴛʜᴇ ᴅᴇᴠᴇʟᴏᴘᴇʀ:</i> "
+                            "<b><a href='https://t.me/AV_SUPPORT_GROUP'>[ ᴄʟɪᴄᴋ ʜᴇʀᴇ ]</a></b>"
+                        ),
+                        parse_mode=ParseMode.HTML,
+                        disable_web_page_preview=True
+                    )
+                    return False
+                not_joined_channels.append((chat.title, invite_link))
+            except Exception as e:
+                print(f"[ERROR] Chat fetch failed: {e}")
+                continue
+        except Exception as e:
+            print(f"[ERROR] get_chat_member failed: {e}")
+            continue
+
+    if not_joined_channels:
+        buttons = [
+            [InlineKeyboardButton(f"[{i+1}] {title}", url=link)]
+            for i, (title, link) in enumerate(not_joined_channels)
+        ]
+        buttons.append([
+            InlineKeyboardButton("🔄 Try Again", url=f"https://t.me/{bot_user.username}?start=start")
+        ])
+        await message.reply_photo(
+            photo=AUTH_PICS,
+            caption=script.AUTH_TXT.format(message.from_user.mention),
+            reply_markup=InlineKeyboardMarkup(buttons),
+            parse_mode=ParseMode.HTML
+        )
         return False
-    except Exception:
-        await message.reply_text(
-            text = f"<i>Sᴏᴍᴇᴛʜɪɴɢ ᴡʀᴏɴɢ ᴄᴏɴᴛᴀᴄᴛ ᴍʏ ᴅᴇᴠᴇʟᴏᴘᴇʀ</i> <b><a href='https://t.me/AV_SUPPORT_GROUP'>[ ᴄʟɪᴄᴋ ʜᴇʀᴇ ]</a></b>",
-            parse_mode=ParseMode.HTML,
-            disable_web_page_preview=True)
+
+    return True
+    
+async def av_verification(client, message):
+    user_id = message.from_user.id
+    if VERIFY and not await check_verification(client, user_id):
+        btn = [[
+            InlineKeyboardButton("✅️ ᴠᴇʀɪғʏ ✅️", url=await get_token(client, user_id, f"https://t.me/{BOT_USERNAME}?start=")),
+            InlineKeyboardButton("⁉️ ʜᴏᴡ ᴛᴏ ᴠᴇʀɪғʏ ⁉️", url=HOW_TO_VERIFY)
+        ],[
+            InlineKeyboardButton("😁 ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ - ɴᴏ ɴᴇᴇᴅ ᴛᴏ ᴠᴇʀɪғʏ 😁", callback_data='seeplans')
+        ]]
+        d = await message.reply_text(
+            text=script.VERIFICATION_TEXT.format(message.from_user.mention),
+            protect_content=False,
+            reply_markup=InlineKeyboardMarkup(btn),
+            disable_web_page_preview=True,
+            parse_mode=ParseMode.HTML
+        )
+        await asyncio.sleep(600)
+        await d.delete()
+        await message.delete()
         return False
     return True
 
-#Dont Remove My Credit @AV_BOTz_UPDATE 
-#This Repo Is By @BOT_OWNER26 
-# For Any Kind Of Error Ask Us In Support Group @AV_SUPPORT_GROUP
+async def av_x_verification(client, message):
+    user_id = message.from_user.id
+    if BATCH_VERIFY and not await check_verification(client, user_id):
+        btn = [[
+            InlineKeyboardButton("✅️ ᴠᴇʀɪғʏ ✅️", url=await get_token(client, user_id, f"https://t.me/{BOT_USERNAME}?start=")),
+            InlineKeyboardButton("⁉️ ʜᴏᴡ ᴛᴏ ᴠᴇʀɪғʏ ⁉️", url=HOW_TO_VERIFY)
+        ],[
+            InlineKeyboardButton("😁 ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ - ɴᴏ ɴᴇᴇᴅ ᴛᴏ ᴠᴇʀɪғʏ 😁", callback_data='seeplans')
+        ]]
+        d = await message.reply_text(
+            text=script.VERIFICATION_TEXT.format(message.from_user.mention),
+            protect_content=False,
+            reply_markup=InlineKeyboardMarkup(btn),
+            disable_web_page_preview=True,
+            parse_mode=ParseMode.HTML
+        )
+        await asyncio.sleep(600)
+        await d.delete()
+        await message.delete()
+        return False
+    return True
     
 async def is_user_allowed(user_id):
     """📌 यह फंक्शन चेक करेगा कि यूजर की फाइल लिमिट खत्म हुई है या नहीं"""
@@ -102,13 +119,3 @@ async def is_user_allowed(user_id):
             rate_limit[user_id] = [1, current_time]
 
     return True, 0  # ✅ Allowed
-
-#Dont Remove My Credit @AV_BOTz_UPDATE 
-#This Repo Is By @BOT_OWNER26 
-# For Any Kind Of Error Ask Us In Support Group @AV_SUPPORT_GROUP
-    
-async def get_shortlink(link):
-    shortzy = Shortzy(api_key=SHORTLINK_API, base_site=SHORTLINK_URL)
-    link = await shortzy.convert(link)
-    return link
-    
