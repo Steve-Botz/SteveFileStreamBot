@@ -1,81 +1,208 @@
-import re
-import motor.motor_asyncio
-from info import DATABASE_NAME, DATABASE_URI
+from motor.motor_asyncio import AsyncIOMotorClient
+from datetime import datetime, timedelta
+from info import DB_URL, DB_NAME 
+import time, pytz
 
-#Dont Remove My Credit @AV_BOTz_UPDATE 
-#This Repo Is By @BOT_OWNER26 
-# For Any Kind Of Error Ask Us In Support Group @AV_SUPPORT_GROUP
-
+client = AsyncIOMotorClient(DB_URL)
+mydb = client[DB_NAME]
+    
 class Database:
-    def __init__(self, uri, database_name):
-        self._client = motor.motor_asyncio.AsyncIOMotorClient(uri)
-        self.db = self._client[database_name]
-        self.col = self.db.users
-        self.bannedList = self.db.bannedList
+    def __init__(self):
+        self.users = mydb.users
+        self.blocked_users = mydb.blocked_users
+        self.blocked_channels = mydb.blocked_channels
+        self.files = mydb.files
+        
+    # 🧑‍💻 USER SYSTEM ------------------------------
 
     def new_user(self, id, name):
-        return dict(
-            id = id,
-            name = name,
-        )
+        return {
+            "id": id,
+            "name": name,
+            "verification_status": {
+                "date": "1999-12-31",
+                "time": "23:59:59"
+            }
+        }
 
-#Dont Remove My Credit @AV_BOTz_UPDATE 
-#This Repo Is By @BOT_OWNER26 
-# For Any Kind Of Error Ask Us In Support Group @AV_SUPPORT_GROUP
-    
     async def add_user(self, id, name):
-        user = self.new_user(id, name)
-        await self.col.insert_one(user)
-    
+        if not await self.is_user_exist(id):
+            user = self.new_user(id, name)
+            await self.users.insert_one(user)
+
     async def is_user_exist(self, id):
-        user = await self.col.find_one({'id':int(id)})
-        return bool(user)
-    
+        return bool(await self.users.find_one({'id': int(id)}))
+
     async def total_users_count(self):
-        count = await self.col.count_documents({})
-        return count
+        return await self.users.count_documents({})
 
     async def get_all_users(self):
-        return self.col.find({})
-        
-#Dont Remove My Credit @AV_BOTz_UPDATE 
-#This Repo Is By @BOT_OWNER26 
-# For Any Kind Of Error Ask Us In Support Group @AV_SUPPORT_GROUP
-    
+        return self.users.find({})
+
     async def delete_user(self, user_id):
-        await self.col.delete_many({'id': int(user_id)})
-
-    async def ban_user(self , user_id):
-        user = await self.bannedList.find_one({'banId' : int(user_id)})
-        if user:
-            return False
-        else:
-            await self.bannedList.insert_one({'banId' : int(user_id)})
-            return True
+        await self.users.delete_many({'id': int(user_id)})
         
-    async def is_banned(self , user_id):
-        user = await self.bannedList.find_one({'banId' : int(user_id)})
-        return True if user else False
+    # ✅ VERIFICATION SYSTEM -----------------------
 
-#Dont Remove My Credit @AV_BOTz_UPDATE 
-#This Repo Is By @BOT_OWNER26 
-# For Any Kind Of Error Ask Us In Support Group @AV_SUPPORT_GROUP
+    async def update_verification(self, id, date, time):
+        status = {
+            'date': str(date),
+            'time': str(time)
+        }
+        await self.users.update_one(
+            {'id': int(id)},
+            {'$set': {'verification_status': status}}
+        )
+
+    async def get_verified(self, id):
+        default = {
+            'date': "1999-12-31",
+            'time': "23:59:59"
+        }
+        user = await self.users.find_one({'id': int(id)})
+        if user:
+            return user.get("verification_status", default)
+        return default
+        
+    async def get_all_verified_users(self):
+        cursor = self.users.find({
+            "verification_status.date": {"$ne": "1999-12-31"}
+        })
+        verified_users = []
+        async for user in cursor:
+            verified_users.append(user)
+        return verified_users
+
+    async def get_verified_users_count(self):
+        return await self.users.count_documents({"verification_status.status": "verified"})
     
-    async def is_unbanned(self , user_id):
-        try : 
-            if await self.bannedList.find_one({'banId' : int(user_id)}):
-                await self.bannedList.delete_one({'banId' : int(user_id)})
+    # 🚫 USER BAN SYSTEM ---------------------------
+
+    async def is_user_blocked(self, user_id: int) -> bool:
+        return await self.blocked_users.find_one({"user_id": user_id}) is not None
+
+    async def get_block_data(self, user_id: int):
+        return await self.blocked_users.find_one({"user_id": user_id})
+
+    async def block_user(self, user_id: int, reason: str = "No reason provided."):
+        await self.blocked_users.update_one(
+            {"user_id": user_id},
+            {
+                "$set": {
+                    "user_id": user_id,
+                    "reason": reason,
+                    "blocked_at": datetime.utcnow()
+                }
+            },
+            upsert=True
+        )
+
+    async def unblock_user(self, user_id: int):
+        await self.blocked_users.delete_one({"user_id": user_id})
+
+    async def get_all_blocked_users(self):
+        return self.blocked_users.find({})
+
+    async def total_blocked_count(self):
+        return await self.blocked_users.count_documents({})
+
+    # 📣 CHANNEL BAN SYSTEM ------------------------
+
+    async def is_channel_blocked(self, channel_id: int) -> bool:
+        return await self.blocked_channels.find_one({"channel_id": channel_id}) is not None
+
+    async def block_channel(self, channel_id: int, reason: str = "No reason provided."):
+        await self.blocked_channels.update_one(
+            {"channel_id": channel_id},
+            {
+                "$set": {
+                    "channel_id": channel_id,
+                    "reason": reason,
+                    "blocked_at": datetime.utcnow()
+                }
+            },
+            upsert=True
+        )
+
+    async def unblock_channel(self, channel_id: int):
+        await self.blocked_channels.delete_one({"channel_id": channel_id})
+
+    async def get_all_blocked_channels(self):
+        return self.blocked_channels.find({})
+
+    async def get_channel_block_data(self, channel_id: int):
+        return await self.blocked_channels.find_one({"channel_id": channel_id})
+
+    async def total_blocked_channels_count(self):
+        return await self.blocked_channels.count_documents({})
+
+    async def get_user(self, user_id):
+        user_data = await self.users.find_one({"id": user_id})
+        return user_data
+        
+    async def update_user(self, user_data):
+        await self.users.update_one({"id": user_data["id"]}, {"$set": user_data}, upsert=True)
+
+    async def has_premium_access(self, user_id):
+        user_data = await self.get_user(user_id)
+        if user_data:
+            expiry_time = user_data.get("expiry_time")
+            if expiry_time is None:
+                return False
+            elif isinstance(expiry_time, datetime) and datetime.now() <= expiry_time:
                 return True
             else:
-                return False
-        except Exception as e:
-            e = f'Fᴀɪʟᴇᴅ ᴛᴏ ᴜɴʙᴀɴ.Rᴇᴀsᴏɴ : {e}'
-            print(e)
-            return e
+                await self.users.update_one({"id": user_id}, {"$set": {"expiry_time": None}})
+        return False
         
+    async def update_one(self, filter_query, update_data):
+        try:
+            result = await self.users.update_one(filter_query, update_data)
+            return result.matched_count == 1
+        except Exception as e:
+            print(f"Error updating document: {e}")
+            return False
+            
+    async def all_premium_users_count(self):
+        count = await self.users.count_documents({
+        "expiry_time": {"$gt": datetime.now()}
+        })
+        return count
 
-db = Database(DATABASE_URI, DATABASE_NAME)
+    async def get_expired(self, current_time):
+        expired_users = []
+        cursor = self.users.find({"expiry_time": {"$lt": current_time}})
+        async for user in cursor:
+            expired_users.append(user)
+        return expired_users
 
-#Dont Remove My Credit @AV_BOTz_UPDATE 
-#This Repo Is By @BOT_OWNER26 
-# For Any Kind Of Error Ask Us In Support Group @AV_SUPPORT_GROUP
+# Inside your DB manager class
+    async def get_expiring_soon(self, label, delta):
+        reminder_key = f"reminder_{label}_sent"
+        now = datetime.utcnow()
+        target_time = now + delta
+        window = timedelta(seconds=30)
+
+        start_range = target_time - window
+        end_range = target_time + window
+
+        reminder_users = []
+        cursor = self.users.find({
+            "expiry_time": {"$gte": start_range, "$lte": end_range},
+            reminder_key: {"$ne": True}
+        })
+
+        async for user in cursor:
+            reminder_users.append(user)
+            await self.users.update_one(
+                {"id": user["id"]}, {"$set": {reminder_key: True}}
+            )
+
+        return reminder_users
+
+    async def remove_premium_access(self, user_id):
+        return await self.update_one(
+            {"id": user_id}, {"$set": {"expiry_time": None}}
+        )
+
+db = Database()
