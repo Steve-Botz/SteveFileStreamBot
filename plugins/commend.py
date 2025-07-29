@@ -31,13 +31,13 @@ async def start(client, message):
         await client.send_message(LOG_CHANNEL, script.LOG_TEXT.format(me2, user_id, mention))
     if len(message.command) == 1 or message.command[1] == "start":
         buttons = [[
-            InlineKeyboardButton('• ᴜᴘᴅᴀᴛᴇᴅ •', url=CHANNEL),
-            InlineKeyboardButton('• sᴜᴘᴘᴏʀᴛ •', url=SUPPORT)
+            InlineKeyboardButton('🌨 ᴜᴘᴅᴀᴛᴇᴅ 🌨', url=CHANNEL),
+            InlineKeyboardButton('🌟 sᴜᴘᴘᴏʀᴛ 🌟', url=SUPPORT)
         ], [
-            InlineKeyboardButton('• ʜᴇʟᴘ •', callback_data='help'),
-            InlineKeyboardButton('• ᴀʙᴏᴜᴛ •', callback_data='about')
-        ],[
-            InlineKeyboardButton('✨ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ : ʀᴇᴍᴏᴠᴇ ᴀᴅꜱ ✨', callback_data="premium_info")
+            InlineKeyboardButton('🌺 ʜᴇʟᴘ', callback_data='help'),
+            InlineKeyboardButton('💌 ᴀʙᴏᴜᴛ', callback_data='about')
+      # ],[
+      #      InlineKeyboardButton('✨ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ : ʀᴇᴍᴏᴠᴇ ᴀᴅꜱ ✨', callback_data="premium_info")
         ]]
         reply_markup = InlineKeyboardMarkup(buttons)
         await message.reply_photo(
@@ -170,10 +170,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.message.delete()
     elif query.data == "about":
         buttons = [[
-	    InlineKeyboardButton('💻 sᴏᴜʀᴄᴇ ᴄᴏᴅᴇ', url='https://github.com/Botsthe/AV-FILE-TO-LINK-PRO.git')
-	],[
-            InlineKeyboardButton('• ʜᴏᴍᴇ •', callback_data='start'),
-	    InlineKeyboardButton('• ᴄʟᴏsᴇ •', callback_data='close_data')
+            InlineKeyboardButton('ʜᴏᴍᴇ 🏠', callback_data='start'),
+	    InlineKeyboardButton('ᴄʟᴏsᴇ ❌', callback_data='close_data')
         ]]
         reply_markup = InlineKeyboardMarkup(buttons)
         me2 = (await client.get_me()).mention
@@ -185,13 +183,13 @@ async def cb_handler(client: Client, query: CallbackQuery):
     
     elif query.data == "start":
         buttons = [[
-            InlineKeyboardButton('• ᴜᴘᴅᴀᴛᴇᴅ •', url=CHANNEL),
-	    InlineKeyboardButton('• sᴜᴘᴘᴏʀᴛ •', url=SUPPORT)
+            InlineKeyboardButton('🌨 ᴜᴘᴅᴀᴛᴇᴅ 🌨', url=CHANNEL),
+	    InlineKeyboardButton('🌟 sᴜᴘᴘᴏʀᴛ 🌟', url=SUPPORT)
         ],[
-            InlineKeyboardButton('• ʜᴇʟᴘ •', callback_data='help'),
-            InlineKeyboardButton('• ᴀʙᴏᴜᴛ •', callback_data='about')
-        ],[
-            InlineKeyboardButton('✨ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ : ʀᴇᴍᴏᴠᴇ ᴀᴅꜱ ✨', callback_data="premium_info")
+            InlineKeyboardButton('🌺 ʜᴇʟᴘ', callback_data='help'),
+            InlineKeyboardButton('💌 ᴀʙᴏᴜᴛ', callback_data='about')
+        #],[
+         #   InlineKeyboardButton('✨ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ : ʀᴇᴍᴏᴠᴇ ᴀᴅꜱ ✨', callback_data="premium_info")
         ]]
         reply_markup = InlineKeyboardMarkup(buttons)
         await query.message.edit_text(
@@ -202,10 +200,10 @@ async def cb_handler(client: Client, query: CallbackQuery):
 	    
     elif query.data == "help":
         buttons = [[
-            InlineKeyboardButton('• ᴀᴅᴍɪɴ •', callback_data='admincmd')
+            InlineKeyboardButton('ᴀᴅᴍɪɴ 😎', callback_data='admincmd')
 	],[
-	    InlineKeyboardButton('• ʜᴏᴍᴇ •', callback_data='start'),
-	    InlineKeyboardButton('• ᴄʟᴏsᴇ •', callback_data='close_data')
+	    InlineKeyboardButton('ʜᴏᴍᴇ 🏠', callback_data='start'),
+	    InlineKeyboardButton('ᴄʟᴏsᴇ ❌', callback_data='close_data')
         ]]
         reply_markup = InlineKeyboardMarkup(buttons)
         await query.message.edit_text(
@@ -219,7 +217,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         if not query.from_user.id in ADMINS:
             return await query.answer('This Feature Is Only For Admins !' , show_alert=True)
         buttons = [[
-            InlineKeyboardButton('• ʜᴏᴍᴇ •', callback_data='start')
+            InlineKeyboardButton('ʜᴏᴍᴇ 🏠', callback_data='start')
         ]]
         reply_markup = InlineKeyboardMarkup(buttons)
         await query.message.edit_text(
@@ -425,9 +423,7 @@ async def delete_files_list(client, message):
 @Client.on_message(filters.command("about"))
 async def about(client, message):
     buttons = [[
-       InlineKeyboardButton('💻 sᴏᴜʀᴄᴇ ᴄᴏᴅᴇ', url='https://github.com/Botsthe/AV-FILE-TO-LINK-PRO.git')
-    ],[
-       InlineKeyboardButton('• ᴄʟᴏsᴇ •', callback_data='close_data')
+       InlineKeyboardButton('ᴄʟᴏsᴇ ❌', callback_data='close_data')
     ]]
     reply_markup = InlineKeyboardMarkup(buttons)
     me2 = (await client.get_me()).mention
@@ -436,12 +432,11 @@ async def about(client, message):
         disable_web_page_preview=True, 
         reply_markup=reply_markup
     )
-
  
 @Client.on_message(filters.command("help"))
 async def help(client, message):
     btn = [[
-       InlineKeyboardButton('• ᴄʟᴏsᴇ •', callback_data='close_data')
+       InlineKeyboardButton('ᴄʟᴏsᴇ ❌', callback_data='close_data')
     ]]
     reply_markup = InlineKeyboardMarkup(btn)
     await message.reply_text(
