@@ -5,26 +5,30 @@ from pyrogram import Client
 from web.utils.config_parser import TokenParser
 from web.server import multi_clients, work_loads, Webavbot
 
-#Dont Remove My Credit @AV_BOTz_UPDATE 
-#This Repo Is By @BOT_OWNER26 
+# Dont Remove My Credit @AV_BOTz_UPDATE 
+# This Repo Is By @BOT_OWNER26 
 # For Any Kind Of Error Ask Us In Support Group @AV_SUPPORT_GROUP
 
 async def initialize_clients():
+    global MULTI_CLIENT
     multi_clients[0] = Webavbot
     work_loads[0] = 0
+
     all_tokens = TokenParser().parse_from_env()
+
     if not all_tokens:
-        print("No additional clients found, using default client")
+        logging.warning("No additional clients found, using default client")
         return
-    
-    async def start_client(client_id, token):
+
+    async def start_client(client_id: int, token: str):
         try:
-            print(f"Starting - Client {client_id}")
+            logging.info(f"Starting Client {client_id}...")
             if client_id == len(all_tokens):
                 await asyncio.sleep(2)
-                print("This will take some time, please wait...")
+                logging.info("This will take some time, please wait...")
+
             client = await Client(
-                name=str(client_id),
+                name=f"AVClient_{client_id}",
                 api_id=API_ID,
                 api_hash=API_HASH,
                 bot_token=token,
@@ -32,19 +36,27 @@ async def initialize_clients():
                 no_updates=True,
                 in_memory=True
             ).start()
+
             work_loads[client_id] = 0
             return client_id, client
-        except Exception:
-            logging.error(f"Failed starting Client - {client_id} Error:", exc_info=True)
-    
-    clients = await asyncio.gather(*[start_client(i, token) for i, token in all_tokens.items()])
-    multi_clients.update(dict(clients))
-    if len(multi_clients) != 1:
+
+        except Exception as e:
+            logging.error(f"❌ Failed to start Client {client_id}", exc_info=True)
+            return None
+
+    # Launch all clients
+    results = await asyncio.gather(*[
+        start_client(i, token) for i, token in all_tokens.items()
+    ])
+
+    # Filter out failed (None) results
+    valid_clients = {cid: cli for res in results if res for cid, cli in [res]}
+
+    # Update global client map
+    multi_clients.update(valid_clients)
+
+    if len(multi_clients) > 1:
         MULTI_CLIENT = True
-        print("Multi-Client Mode Enabled")
+        logging.info("✅ Multi-Client Mode Enabled")
     else:
-        print("No additional clients were initialized, using default client")
- 
-#Dont Remove My Credit @AV_BOTz_UPDATE 
-#This Repo Is By @BOT_OWNER26 
-# For Any Kind Of Error Ask Us In Support Group @AV_SUPPORT_GROUP
+        logging.warning("No additional clients were initialized, using default client only.")
