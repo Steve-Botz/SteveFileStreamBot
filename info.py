@@ -18,7 +18,7 @@ ADMINS = list(map(int, environ.get('ADMINS', '6317211079').split()))
 AUTH_CHANNEL = list(map(int, environ.get("AUTH_CHANNEL", "-1002553442366").split()))
 
 OWNER_USERNAME = environ.get("OWNER_USERNAME", 'AmaniContactBot')
-BOT_USERNAME = environ.get("BOT_USERNAME", 'SteveStreamBot')
+BOT_USERNAME = environ.get("BOT_USERNAME", 'FilesToLinkPro_bot')
 
 CHANNEL = environ.get('CHANNEL', 'https://t.me/steveBotz')
 SUPPORT = environ.get('SUPPORT', 'https://t.me/SteveBotzSupport')
@@ -33,7 +33,7 @@ BATCH_VERIFY = environ.get("BATCH_VERIFY", False)  # Verify files in batch
 IS_SHORTLINK = bool(environ.get('IS_SHORTLINK', False))  # Enable channel shortlink creation
 MAINTENANCE_MODE = environ.get("MAINTENANCE_MODE", False)  # Put bot in maintenance
 PROTECT_CONTENT = environ.get('PROTECT_CONTENT', False)  # Enable content protection
-PUBLIC_FILE_STORE = environ.get('PUBLIC_FILE_STORE', True)  # Public or private file visibility
+PUBLIC_FILE_STORE = environ.get('PUBLIC_FILE_STORE', False)  # Public or private file visibility
 BATCH_PROTECT_CONTENT = environ.get('BATCH_PROTECT_CONTENT', False)  # Batch file protection
 
 SHORTLINK_URL = environ.get('SHORTLINK_URL', 'techvjlink.site')
