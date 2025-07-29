@@ -23,7 +23,7 @@ async def private_receive_handler(c: Client, m: Message):
         user_data = await db.get_block_data(user_id)
         await m.reply(
             f"🚫 **Yᴏᴜ ᴀʀᴇ ʙᴀɴɴᴇᴅ ғʀᴏᴍ ᴜꜱɪɴɢ ᴛʜɪꜱ ʙᴏᴛ.**\n\n"
-            f"🔄 **Cᴏɴᴛᴀᴄᴛ ᴀᴅᴍɪɴ ɪғ ʏᴏᴜ ᴛʜɪɴᴋ ᴛʜɪꜱ ɪꜱ ᴀ ᴍɪꜱᴛᴀᴋᴇ.**\n\n@AV_OWNER_BOT"
+            f"🔄 **Cᴏɴᴛᴀᴄᴛ ᴀᴅᴍɪɴ ɪғ ʏᴏᴜ ᴛʜɪɴᴋ ᴛʜɪꜱ ɪꜱ ᴀ ᴍɪꜱᴛᴀᴋᴇ.**\n\n@AmaniContactBot"
         )
         return
     if not await db.has_premium_access(user_id):
@@ -36,7 +36,7 @@ async def private_receive_handler(c: Client, m: Message):
             return
 
     file_id = m.document or m.video or m.audio
-    file_name = file_id.file_name if file_id.file_name else f"AV_File_{int(time.time())}.mkv"
+    file_name = file_id.file_name if file_id.file_name else f"Steve_File_{int(time.time())}.mkv"
     file_size = get_size(file_id.file_size)
 
     if not await db.has_premium_access(user_id):
@@ -47,7 +47,7 @@ async def private_receive_handler(c: Client, m: Message):
     try:
         forwarded = await m.forward(chat_id=BIN_CHANNEL)
         hash_str = get_hash(forwarded)
-        stream = f"{URL}watch/{forwarded.id}/AV_File_{int(time.time())}.mkv?hash={hash_str}"
+        stream = f"{URL}watch/{forwarded.id}/Steve_File_{int(time.time())}.mkv?hash={hash_str}"
         download = f"{URL}{forwarded.id}?hash={hash_str}"
         file_link = f"https://t.me/{BOT_USERNAME}?start=file_{forwarded.id}"
         share_link = f"https://t.me/share/url?url={file_link}"
@@ -72,12 +72,12 @@ async def private_receive_handler(c: Client, m: Message):
             script.CAPTION_TXT.format(CHANNEL, file_name, file_size, stream, download),
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("• ꜱᴛʀᴇᴀᴍ •", url=stream),
-                 InlineKeyboardButton("• ᴅᴏᴡɴʟᴏᴀᴅ •", url=download)],
-                [InlineKeyboardButton("• ɢᴇᴛ ғɪʟᴇ •", url=file_link),
-                 InlineKeyboardButton("• ꜱʜᴀʀᴇ•", url=share_link)],
-                [InlineKeyboardButton("• ᴅᴇʟᴇᴛᴇ ғɪʟᴇ •", callback_data=f"deletefile_{forwarded.id}"),
-                 InlineKeyboardButton("• ᴄʟᴏꜱᴇ •", callback_data="close_data")]
+                [InlineKeyboardButton("🔺 ꜱᴛʀᴇᴀᴍ", url=stream),
+                 InlineKeyboardButton("ᴅᴏᴡɴʟᴏᴀᴅ 🔻", url=download)],
+                [InlineKeyboardButton("ɢᴇᴛ ғɪʟᴇ 📂", url=file_link),
+                 InlineKeyboardButton("ꜱʜᴀʀᴇ ↪️", url=share_link)],
+                [InlineKeyboardButton("ᴅᴇʟᴇᴛᴇ ғɪʟᴇ 🚫", callback_data=f"deletefile_{forwarded.id}"),
+                 InlineKeyboardButton("ᴄʟᴏꜱᴇ ❌", callback_data="close_data")]
             ])
         )
 
