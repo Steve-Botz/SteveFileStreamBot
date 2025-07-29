@@ -43,7 +43,7 @@ async def render_page(id: str, secure_hash: str, src: str = None) -> str:
     file_size = get_size(file_data.file_size)
 
     if tag in ["video", "audio"]:
-        template_file = os.path.join("web", "template", "req.html")
+        template_file = os.path.join("web", "template", "webav.html")
     else:
         template_file = os.path.join("web", "template", "dl.html")
         # Recalculate file size from URL header if downloadable file
