@@ -12,10 +12,6 @@ from web.utils.render_template import render_page
 routes = web.RouteTableDef()
 class_cache = {}
 
-# Dont Remove My Credit @AV_BOTz_UPDATE 
-# This Repo Is By @BOT_OWNER26 
-# For Any Kind Of Error Ask Us In Support Group @AV_SUPPORT_GROUP
-
 @routes.get("/", allow_head=True)
 async def root_route_handler(_):
     return web.json_response({
