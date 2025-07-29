@@ -1,68 +1,71 @@
-from utils import temp 
+from pyrogram import Client, filters
+from pyrogram.types import Message
+from info import ADMINS
 from database.users_db import db
-from info import *
-from pyrogram import Client, filters, enums
-from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
-from pyrogram.errors.exceptions.bad_request_400 import MessageTooLong, PeerIdInvalid
-from pyrogram.errors import ChatAdminRequired
-import asyncio
 
-#Dont Remove My Credit @AV_BOTz_UPDATE 
-#This Repo Is By @BOT_OWNER26 
-# For Any Kind Of Error Ask Us In Support Group @AV_SUPPORT_GROUP
+@Client.on_message(filters.command("ban") & filters.user(ADMINS))
+async def ban_handler(client, message: Message):
+    if len(message.command) < 2:
+        return await message.reply("⚠️ Usage: `/ban user_id_or_channel_id [reason]`", quote=True)
+    try:
+        target_id = int(message.command[1])
+        reason = " ".join(message.command[2:]) or "No reason"
 
-@Client.on_message(filters.command('ban') & filters.user(ADMINS))
-async def do_ban(bot ,  message):
-    userid = message.text.split(" ", 2)[1] if len(message.text.split(" ", 1)) > 1 else None
-    reason = message.text.split(" ", 2)[2] if len(message.text.split(" ", 2)) > 2 else None
-    if not userid:
-        return await message.reply('<b>ᴘʟᴇᴀsᴇ ᴀᴅᴅ ᴀ ᴠᴀʟɪᴅ ᴜsᴇʀ/ᴄʜᴀɴɴᴇʟ ɪᴅ ᴡɪᴛʜ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ\n\nᴇx : /ban (user/channel_id) (banning reason[Optional]) \nʀᴇᴀʟ ᴇx : <code>/ban 1234567899</code>\nᴡɪᴛʜ ʀᴇᴀsᴏɴ ᴇx:<code>/ban 1234567899 seding adult links to bot</code>\nᴛᴏ ʙᴀɴ ᴀ ᴄʜᴀɴɴᴇʟ :\n<code>/ban CHANEL_ID</code>\nᴇx : <code>/ban -1001234567899</code></b>')
-    text = await message.reply("<b>ʟᴇᴛ ᴍᴇ ᴄʜᴇᴄᴋ 👀</b>")
-    banSts = await db.ban_user(userid)
-    if banSts == True:
-        await text.edit(
-    text=f"<b><code>{userid}</code> ʜᴀs ʙᴇᴇɴ ʙᴀɴɴᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ\n\nSʜᴏᴜʟᴅ I sᴇɴᴅ ᴀɴ ᴀʟᴇʀᴛ ᴛᴏ ᴛʜᴇ ʙᴀɴɴᴇᴅ ᴜsᴇʀ?</b>",
-    reply_markup=InlineKeyboardMarkup(
-        [
-            [
-                InlineKeyboardButton("ʏᴇs ✅", callback_data=f"sendAlert_{userid}_{reason if reason else 'no reason provided'}"),
-                InlineKeyboardButton("ɴᴏ ❌", callback_data=f"noAlert_{userid}"),
-            ],
-        ]
-    ),
-)
-    else:
-        await text.edit(f"<b>Cᴏɴᴛʀᴏʟʟ ʏᴏᴜʀ ᴀɴɢᴇʀ ʙʀᴏ...\n<code>{userid}</code> ɪs ᴀʟʀᴇᴀᴅʏ ʙᴀɴɴᴇᴅ !!</b>")
-    return
+        if str(target_id).startswith("-100"):
+            # Channel ban
+            await db.block_channel(target_id, reason)
+            await message.reply(f"🚫 Channel `{target_id}` banned.\n📝 Reason: `{reason}`", quote=True)
+            try:
+                await client.send_message(target_id, f"🚫 This channel is banned.\nReason: `{reason}`")
+            except: pass
+        else:
+            # User ban
+            await db.block_user(target_id, reason)
+            await message.reply(f"🚫 User `{target_id}` banned.\n📝 Reason: `{reason}`", quote=True)
+            try:
+                await client.send_message(target_id, f"🚫 You are banned.\nReason: `{reason}`")
+            except: pass
 
-#Dont Remove My Credit @AV_BOTz_UPDATE 
-#This Repo Is By @BOT_OWNER26 
-# For Any Kind Of Error Ask Us In Support Group @AV_SUPPORT_GROUP
+    except Exception as e:
+        await message.reply(f"❌ Error banning: `{e}`", quote=True)
 
-@Client.on_message(filters.command('unban') & filters.user(ADMINS))
-async def do_unban(bot ,  message):
-    userid = message.text.split(" ", 2)[1] if len(message.text.split(" ", 1)) > 1 else None
-    if not userid:
-        return await message.reply('ɢɪᴠᴇ ᴍᴇ ᴀɴ ɪᴅ\nᴇx : <code>/unban 1234567899<code>')
-    text = await message.reply("<b>ʟᴇᴛ ᴍᴇ ᴄʜᴇᴄᴋ 🥱</b>")
-    unban_chk = await db.is_unbanned(userid)
-    if  unban_chk == True:
-        await text.edit(text=f'<b><code>{userid}</code> ɪs ᴜɴʙᴀɴɴᴇᴅ\nSʜᴏᴜʟᴅ I sᴇɴᴅ ᴛʜᴇ ʜᴀᴘᴘʏ ɴᴇᴡs ᴀʟᴇʀᴛ ᴛᴏ ᴛʜᴇ ᴜɴʙᴀɴɴᴇᴅ ᴜsᴇʀ?</b>',
-        reply_markup=InlineKeyboardMarkup(
-        [
-            [
-                InlineKeyboardButton("ʏᴇs ✅", callback_data=f"sendUnbanAlert_{userid}"),
-                InlineKeyboardButton("ɴᴏ ❌", callback_data=f"NoUnbanAlert_{userid}"),
-            ],
-        ]
-    ),
-)
+@Client.on_message(filters.command("unban") & filters.user(ADMINS))
+async def unban_handler(client, message: Message):
+    if len(message.command) < 2:
+        return await message.reply("⚠️ Usage: `/unban user_id_or_channel_id`", quote=True)
+    try:
+        target_id = int(message.command[1])
 
-    elif unban_chk==False:
-        await text.edit('<b>ᴜsᴇʀ ɪs ɴᴏᴛ ʙᴀɴɴᴇᴅ ʏᴇᴛ.</b>')
-    else :
-        await text.edit(f"<b>ғᴀɪʟᴇᴅ ᴛᴏ ᴜɴʙᴀɴ ᴜsᴇʀ/ᴄʜᴀɴɴᴇʟ.\nʀᴇᴀsᴏɴ : {unban_chk}</b>")
+        if str(target_id).startswith("-100"):
+            await db.unblock_channel(target_id)
+            await message.reply(f"✅ Channel `{target_id}` unbanned.", quote=True)
+        else:
+            await db.unblock_user(target_id)
+            await message.reply(f"✅ User `{target_id}` unbanned.", quote=True)
+            try:
+                await client.send_message(target_id, "✅ You are unbanned.")
+            except: pass
 
-#Dont Remove My Credit @AV_BOTz_UPDATE 
-#This Repo Is By @BOT_OWNER26 
-# For Any Kind Of Error Ask Us In Support Group @AV_SUPPORT_GROUP
+    except Exception as e:
+        await message.reply(f"❌ Error unbanning: `{e}`", quote=True)
+
+@Client.on_message(filters.command("blocked") & filters.user(ADMINS))
+async def list_blocked_users(client, message: Message):
+    text = "**🚫 Blocked Users:**\n\n"
+    async for user in await db.get_all_blocked_users():
+        uid = user.get("user_id")
+        reason = user.get("reason", "No reason")
+        blocked_at = user.get("blocked_at")
+        time_str = blocked_at.strftime("%Y-%m-%d %H:%M") if blocked_at else "Unknown"
+        text += f"• 👤 `{uid}` - `{reason}` - `{time_str}`\n"
+
+    async for ch in await db.get_all_blocked_channels():
+        cid = ch.get("channel_id")
+        reason = ch.get("reason", "No reason")
+        blocked_at = ch.get("blocked_at")
+        time_str = blocked_at.strftime("%Y-%m-%d %H:%M") if blocked_at else "Unknown"
+        text += f"• 📣 `{cid}` - `{reason}` - `{time_str}`\n"
+
+    if text.strip() == "**🚫 Blocked Users:**":
+        text = "✅ No blocked users or channels."
+    await message.reply(text)
