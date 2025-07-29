@@ -1,24 +1,23 @@
 import logging
+from pyrogram import Client, types
+from typing import Union, Optional, AsyncGenerator
+from info import *
+from utils import temp
+
+# Logging Setup (Better)
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
-logging.getLogger("aiohttp").setLevel(logging.ERROR)
-logging.getLogger("pyrogram").setLevel(logging.ERROR)
-logging.getLogger("aiohttp.web").setLevel(logging.ERROR)
-from pyrogram import Client
-from info import *
-from utils import temp
-from typing import Union, Optional, AsyncGenerator
-from pyrogram import types
-from aiohttp import web
+for mod in ["aiohttp", "pyrogram", "aiohttp.web"]:
+    logging.getLogger(mod).setLevel(logging.ERROR)
 
-#Dont Remove My Credit @AV_BOTz_UPDATE 
-#This Repo Is By @BOT_OWNER26 
+
+# Dont Remove My Credit @AV_BOTz_UPDATE 
+# This Repo Is By @BOT_OWNER26 
 # For Any Kind Of Error Ask Us In Support Group @AV_SUPPORT_GROUP
 
 class WebXBot(Client):
-
     def __init__(self):
         super().__init__(
             name=SESSION,
@@ -33,31 +32,35 @@ class WebXBot(Client):
     async def set_self(self):
         temp.BOT = self
 
-#Dont Remove My Credit @AV_BOTz_UPDATE 
-#This Repo Is By @BOT_OWNER26 
-# For Any Kind Of Error Ask Us In Support Group @AV_SUPPORT_GROUP
-    
     async def iter_messages(
         self,
         chat_id: Union[int, str],
         limit: int,
         offset: int = 0,
-    ) -> Optional[AsyncGenerator["types.Message", None]]:
+    ) -> AsyncGenerator["types.Message", None]:
+        """
+        Asynchronously iterate through messages in a chat.
+        Uses batching with a max of 200 messages per request.
+        """
         current = offset
-        while True:
-            new_diff = min(200, limit - current)
-            if new_diff <= 0:
-                return
-            messages = await self.get_messages(chat_id, list(range(current, current+new_diff+1)))
-            for message in messages:
-                yield message
-                current += 1
-      
+        while current < limit:
+            batch_size = min(200, limit - current)
+            ids = list(range(current, current + batch_size))
+            messages = await self.get_messages(chat_id, ids)
+
+            if not messages:
+                break
+
+            for msg in messages:
+                if msg:  # Skip None
+                    yield msg
+
+            current += batch_size  # Increment by batch length
+
+
+# ✅ Global single client instance
 Webavbot = WebXBot()
 
+# ✅ Client management setup
 multi_clients = {}
 work_loads = {}
-
-#Dont Remove My Credit @AV_BOTz_UPDATE 
-#This Repo Is By @BOT_OWNER26 
-# For Any Kind Of Error Ask Us In Support Group @AV_SUPPORT_GROUP
