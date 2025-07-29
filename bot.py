@@ -19,7 +19,7 @@ from typing import Union, Optional, AsyncGenerator
 from Script import script 
 from datetime import date, datetime 
 from aiohttp import web
-from web import web_server
+from web import web_server, check_expired_premium
 from web.server import Webavbot
 from utils import temp, ping_server
 from web.server.clients import initialize_clients
@@ -65,8 +65,10 @@ async def start():
     today = date.today()
     now = datetime.now(tz)
     time = now.strftime("%H:%M:%S %p")
-    await Webavbot.send_message(LOG_CHANNEL, text=script.RESTART_TXT.format(today, time))
-    await Webavbot.send_message(ADMINS[0], text='<b>ʙᴏᴛ ʀᴇsᴛᴀʀᴛᴇᴅ !!</b>')
+    Webavbot.loop.create_task(check_expired_premium(Webavbot))
+    await Webavbot.send_message(chat_id=LOG_CHANNEL, text=script.RESTART_TXT.format(today, time))
+    await Webavbot.send_message(chat_id=ADMINS[0] ,text='<b>ʙᴏᴛ ʀᴇsᴛᴀʀᴛᴇᴅ !!</b>')
+    await Webavbot.send_message(chat_id=SUPPORT_GROUP, text=f"<b>{me.mention} ʀᴇsᴛᴀʀᴛᴇᴅ 🤖</b>")
     app = web.AppRunner(await web_server())
     await app.setup()
     bind_address = "0.0.0.0"
@@ -82,4 +84,3 @@ if __name__ == '__main__':
         loop.run_until_complete(start())
     except KeyboardInterrupt:
         logging.info('----------------------- Service Stopped -----------------------')
-
