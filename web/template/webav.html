@@ -6,717 +6,115 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SteveBotz | {{file_name}}</title>
     <link rel="stylesheet" href="https://unpkg.com/sheryjs/dist/Shery.css" />
+    <link rel="stylesheet" href="https://biisal.github.io/Resources/StreamCSS.css">
+    <link rel="stylesheet" href="https://biisal.github.io/Resources/playerCss.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Josefin+Sans:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
         integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <style>
-        /* Modern Color Theme */
-        :root {
-            --primary: #00aeff;
-            --primary-dark: #0088cc;
-            --dark: #0f172a;
-            --darker: #0a0f1f;
-            --light: #f8fafc;
-            --gray: #94a3b8;
-        }
+    <script src="https://cdn.tailwindcss.com"></script>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: linear-gradient(to bottom, var(--darker), var(--dark));
-            color: var(--light);
-            font-family: 'Poppins', sans-serif;
-            overflow-x: hidden;
-            min-height: 100vh;
-            background-attachment: fixed;
-            line-height: 1.6;
-        }
-
-        /* Navigation Styling - Mobile First */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(0, 174, 255, 0.2);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        #heading {
-            color: var(--primary);
-            font-weight: 700;
-            text-shadow: 0 0 15px rgba(0, 174, 255, 0.5);
-            letter-spacing: 1px;
-            font-size: 1.4rem;
-        }
-
-        .nryt {
-            display: flex;
-            gap: 15px;
-        }
-
-        .nryt a {
-            color: var(--gray);
-            transition: all 0.3s ease;
-            font-weight: 500;
-            text-decoration: none;
-            padding: 5px 10px;
-        }
-
-        .nryt a:hover {
-            color: var(--primary);
-        }
-
-        .menu-toggle {
-            display: none;
-            flex-direction: column;
-            justify-content: space-around;
-            width: 30px;
-            height: 24px;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            z-index: 10;
-        }
-
-        .menu-toggle span {
-            width: 100%;
-            height: 3px;
-            background-color: var(--primary);
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-
-        /* Mobile Navigation */
-        .mobile-nav {
-            position: fixed;
-            top: 0;
-            right: -300px;
-            width: 280px;
-            height: 100vh;
-            background: rgba(15, 23, 42, 0.98);
-            backdrop-filter: blur(20px);
-            z-index: 999;
-            padding: 80px 20px 20px;
-            transition: right 0.4s ease;
-            border-left: 1px solid rgba(0, 174, 255, 0.2);
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .mobile-nav.active {
-            right: 0;
-        }
-
-        .mobile-nav a {
-            color: var(--gray);
-            text-decoration: none;
-            padding: 15px;
-            border-radius: 8px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            display: block;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .mobile-nav a:hover {
-            color: var(--primary);
-            background: rgba(0, 174, 255, 0.1);
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 998;
-            display: none;
-        }
-
-        .overlay.active {
-            display: block;
-        }
-
-        /* Main Content Area */
-        .outer {
-            background: rgba(15, 23, 42, 0.7);
-            border-radius: 0;
-            margin: 0 auto;
-            max-width: 100%;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            border: none;
-            overflow: hidden;
-            padding: 0 15px;
-        }
-
-        .inner {
-            padding-top: 20px;
-        }
-
-        /* Player Styling */
-        .player-container {
-            width: 100%;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            margin-bottom: 20px;
-        }
-
-        #player {
-            width: 100%;
-            height: auto;
-            min-height: 250px;
-            display: block;
-        }
-
-        .file-name {
-            background: rgba(15, 23, 42, 0.5);
-            border-radius: 12px;
-            padding: 15px;
-            margin: 15px 0;
-            border: 1px solid rgba(0, 174, 255, 0.2);
-        }
-
-        .file-name h4 {
-            color: var(--primary);
-            font-weight: 600;
-            margin-bottom: 5px;
-            font-size: 1.1rem;
-        }
-
-        #myDiv {
-            color: var(--light);
-            font-size: 0.9rem;
-            word-break: break-all;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-        }
-
-        /* Download Buttons */
-        .downloadBtn {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin: 20px 0;
-        }
-
-        .downloadBtn button {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            border: none;
-            padding: 15px 10px;
-            border-radius: 8px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            box-shadow: 0 4px 15px rgba(0, 174, 255, 0.3);
-            width: 100%;
-            font-size: 0.9rem;
-        }
-
-        .downloadBtn button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0, 174, 255, 0.5);
-        }
-
-        .downloadBtn button img {
-            height: 28px;
-            width: auto;
-        }
-
-        /* About Navigation */
-        .about-nav {
-            background: rgba(15, 23, 42, 0.7);
-            border-radius: 15px;
-            padding: 10px;
-            margin: 20px auto;
-            max-width: 95%;
-            border: 1px solid rgba(0, 174, 255, 0.2);
-            display: flex;
-            overflow-x: auto;
-            scrollbar-width: none; /* Firefox */
-        }
-
-        .about-nav::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera */
-        }
-
-        .about-nav a {
-            color: var(--gray);
-            padding: 10px 15px;
-            border-radius: 30px;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            text-decoration: none;
-            white-space: nowrap;
-            font-size: 0.9rem;
-        }
-
-        .about-nav a:hover {
-            color: var(--primary);
-            background: rgba(0, 174, 255, 0.1);
-        }
-
-        /* About Sections */
-        .abt-sec {
-            padding: 40px 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .abt-sec:last-child {
-            border-bottom: none;
-        }
-
-        .abt-sec h1 {
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            text-align: center;
-            font-weight: 700;
-            color: var(--light);
-        }
-
-        .abt-sec h1 span {
-            color: var(--primary);
-            position: relative;
-        }
-
-        .abt-sec h1 span::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: var(--primary);
-            border-radius: 3px;
-        }
-
-        .abt-sec p {
-            font-size: 1rem;
-            line-height: 1.7;
-            text-align: center;
-            max-width: 100%;
-            margin: 0 auto;
-            color: var(--gray);
-        }
-
-        .abt-sec p span {
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        /* Links Section */
-        .links {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .links a {
-            text-decoration: none;
-        }
-
-        .links button {
-            background: rgba(15, 23, 42, 0.7);
-            color: var(--light);
-            border: 2px solid var(--primary);
-            padding: 15px;
-            border-radius: 8px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-size: 1rem;
-        }
-
-        .links button:hover {
-            background: var(--primary);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 174, 255, 0.4);
-        }
-
-        /* Footer Styling */
-        footer {
-            background: rgba(15, 23, 42, 0.9);
-            padding: 30px 15px 20px;
-            margin-top: 30px;
-            border-top: 1px solid rgba(0, 174, 255, 0.2);
-        }
-
-        .mid-text {
-            font-size: 1.2rem;
-            text-align: center;
-            margin-bottom: 20px;
-            font-weight: 600;
-            padding: 0 10px;
-        }
-
-        .mid-text span {
-            color: var(--primary);
-            text-decoration: underline;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .mid-text span:hover {
-            text-shadow: 0 0 10px rgba(0, 174, 255, 0.7);
-        }
-
-        .last-text {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            border-radius: 12px;
-            margin: 0 auto 30px;
-            border: 1px solid rgba(0, 174, 255, 0.1);
-        }
-
-        .last-text p {
-            text-align: center;
-            line-height: 1.7;
-            color: var(--gray);
-            font-size: 0.95rem;
-        }
-
-        .copyright {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .copyright h5 {
-            color: var(--gray);
-            font-size: 0.9rem;
-            margin-bottom: 15px;
-        }
-
-        .copyright a span {
-            color: var(--primary);
-            transition: all 0.3s ease;
-        }
-
-        .copyright a:hover span {
-            text-shadow: 0 0 10px rgba(0, 174, 255, 0.7);
-        }
-
-        .icons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .icons a {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 45px;
-            height: 45px;
-            background: rgba(0, 174, 255, 0.1);
-            border-radius: 50%;
-            color: var(--primary);
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-        }
-
-        .icons a:hover {
-            background: var(--primary);
-            color: white;
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 174, 255, 0.4);
-        }
-
-        .copyright h4 {
-            color: var(--gray);
-            font-size: 1rem;
-            margin-top: 15px;
-        }
-
-        /* Bot Features Section */
-        .bot-features {
-            margin-top: 30px;
-            background: rgba(0,174,255,0.1);
-            padding: 20px;
-            border-radius: 12px;
-            border-left: 4px solid var(--primary);
-        }
-
-        .bot-features h3 {
-            color: var(--primary);
-            margin-bottom: 15px;
-            font-size: 1.3rem;
-            text-align: center;
-        }
-
-        .bot-features ul {
-            padding-left: 20px;
-        }
-
-        .bot-features li {
-            margin-bottom: 10px;
-            color: var(--gray);
-            position: relative;
-            padding-left: 25px;
-        }
-
-        .bot-features li:before {
-            content: "✓";
-            color: #00ff88;
-            position: absolute;
-            left: 0;
-            font-weight: bold;
-        }
-
-        /* Contact Features */
-        .contact-features {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-            margin-top: 30px;
-        }
-
-        .feature-item {
-            text-align: center;
-            background: rgba(0, 174, 255, 0.1);
-            padding: 20px 15px;
-            border-radius: 12px;
-        }
-
-        .feature-icon {
-            font-size: 2.2rem;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        .feature-item h3 {
-            color: var(--light);
-            margin-bottom: 8px;
-            font-size: 1.2rem;
-        }
-
-        .feature-item p {
-            color: var(--gray);
-            font-size: 0.95rem;
-        }
-
-        /* Mobile Adjustments */
-        @media (max-width: 768px) {
-            .nryt {
-                display: none;
-            }
-
-            .menu-toggle {
-                display: flex;
-            }
-
-            .about-nav {
-                border-radius: 12px;
-            }
-
-            .abt-sec h1 {
-                font-size: 1.6rem;
-            }
-        }
-
-        @media (min-width: 769px) {
-            .mobile-nav, .overlay {
-                display: none;
-            }
-            
-            .about-nav {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .downloadBtn {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .links {
-                flex-direction: row;
-                flex-wrap: wrap;
-            }
-            
-            .links button {
-                width: auto;
-                min-width: 200px;
-            }
-            
-            .contact-features {
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .feature-item {
-                flex: 1;
-                min-width: 200px;
-                max-width: 250px;
-            }
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .inner > * {
-            animation: fadeIn 0.8s ease-out forwards;
-        }
-
-        .abt-sec:nth-child(1) { animation-delay: 0.1s; }
-        .abt-sec:nth-child(2) { animation-delay: 0.2s; }
-        .abt-sec:nth-child(3) { animation-delay: 0.3s; }
-        .abt-sec:nth-child(4) { animation-delay: 0.4s; }
-    </style>
 </head>
 
 <body>
     <nav>
         <div class="nleft">
             <a href="https://t.me/dreamcinezone">
-                <h3 id="heading" class="magnet">SteveBotz</h3>
+                <!-- if u are trying to change the header name please remove the title text from bottom line  -->
+                <h3 id="heading" style="z-index: 100;" class="magnet">SteveBotz</h3>
             </a>
         </div>
         <div class="nryt">
-            <a class="home-btn magnet" href="#main">Home</a>
-            <a href="#sec1" class="about-btn magnet">About</a>
-        </div>
-        <button class="menu-toggle" id="menuToggle">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-    </nav>
+            <a class="home-btn magnet" href="#main" onclick="toggleWidthnav(this)">Home</a>
 
-    <!-- Mobile Navigation -->
-    <div class="mobile-nav" id="mobileNav">
-        <a href="#main">Home</a>
-        <a href="#sec1">Welcome</a>
-        <a href="#sec2">Channels</a>
-        <a href="#sec3">Bots</a>
-        <a href="#sec4">Contact</a>
-    </div>
-    <div class="overlay" id="overlay"></div>
+            <a href="#sec1" class="about-btn magnet" onclick="toggleWidthnav(this)">About</a>
+        </div>
+    </nav>
+    <center>
+        <div class="about-nav">
+            <a href="#sec1" class="wlcm magnet" onclick="toggleWidth(this)">Welcome</a>
+            <a href="#sec2" class="abt-chnl magnet" onclick="toggleWidth(this)">Channels</a>
+            <a href="#sec3" class="magnet bot-btn" onclick="toggleWidth(this) , bot_btn_clicked()">Bots</a>
+            <a href="#sec4" class="magnet contact-btn" onclick="toggleWidth(this)">Let's Talk</a>
+        </div>
+    </center>
+    <!-- this code is written by @biisal tg:biisal-files  -->
+    <!-- stealing credit doesn't make you developer..so try to give full credit to the developer 😊 u will not loose anything for giving proper credit.   -->
 
     <div class="outer">
         <div class="inner">
             <div class="main" id="main">
-                <div class="player-container">
-                    <video id="player" class="player" src="{{file_url}}" type="video/mp4" playsinline controls width="100%"></video>
-                </div>
+                <video id="player" class="player" src="{{file_url}}" type="video/mp4" playsinline controls
+                    width="100%"></video>
+                <div class="player"></div>
                 <div class="file-name">
                     <h4>File name : </h4>
+                    <br>
                     <p id="myDiv">{{file_name}}</p>
                 </div>
                 <div class="downloadBtn">
-                    <button class="magnet" onclick="vlc_player()"><img src="https://i.postimg.cc/15TQ4y7B/vlc.png" alt="">VLC PLAYER</button>
-                    <button class="magnet" onclick="mx_player()"><img src="https://i.postimg.cc/sx4Msv4T/mx.png" alt="">MX PLAYER</button>
-                    <button class="magnet" onclick="playit_player()"><img src="https://i.postimg.cc/RVGWYJFF/playit.png" alt="">PLAYit PLAYER</button>
-                    <button class="magnet" onclick="km_player()"><img src="https://i.postimg.cc/wT9tFQ9Z/km.png" alt="">KM PLAYER</button>
-                    <button class="magnet" onclick="s_player()"><img src="https://i.postimg.cc/XYJr6NGg/s.png" alt="">S PLAYER</button>
-                    <button class="magnet" onclick="hd_player()"><img src="https://i.postimg.cc/rFT43LNh/hd.png" alt="">HD PLAYER(4K)</button>
-                    <button class="magnet" onclick="bisalDownload()"><img style="height: 35px;" src="https://i.postimg.cc/Zncc9YLq/Pngtree-download-icon-3581467.png" alt="">Download</button>
+                    <button class="magnet" onclick="vlc_player()"><img src="https://i.postimg.cc/15TQ4y7B/vlc.png"
+                            alt="">watch in VLC PLAYER</button>
+                    <button class="magnet" onclick="mx_player()"><img src="https://i.postimg.cc/sx4Msv4T/mx.png"
+                            alt="">watch in MX PLAYER</button>
+                    <button class="magnet" onclick="playit_player()"><img src="https://i.postimg.cc/RVGWYJFF/playit.png"
+                            alt="">watch in PLAYit
+                        PLAYER</button>
+                    <button class="magnet" onclick="km_player()"><img src="https://i.postimg.cc/wT9tFQ9Z/km.png"
+                            alt="">watch in KM PLAYER</button>
+                    <button class="magnet" onclick="s_player()"><img src="https://i.postimg.cc/XYJr6NGg/s.png"
+                            alt="">watch in S PLAYER</button>
+                    <button class="magnet" onclick="hd_player()"><img src="https://i.postimg.cc/rFT43LNh/hd.png"
+                            alt="">watch in HD
+                        PLAYER(4K)</button>
+                    <button class="magnet" onclick="bisalDownload()"><img style="height: 35px;"
+                            src="https://i.postimg.cc/Zncc9YLq/Pngtree-download-icon-3581467.png" alt="">download video
+                    </button>
                 </div>
+
             </div>
-            
-            <center>
-                <div class="about-nav">
-                    <a href="#sec1" class="wlcm magnet">Welcome</a>
-                    <a href="#sec2" class="abt-chnl magnet">Channels</a>
-                    <a href="#sec3" class="magnet bot-btn">Bots</a>
-                    <a href="#sec4" class="magnet contact-btn">Contact</a>
-                </div>
-            </center>
-            
             <div class="abt">
                 <div class="about">
                     <div class="about-dets">
-                        <div class="abt-sec" id="sec1">
-                            <h1>WELCOME TO <Span>STREAMING</Span></h1>
-                            <p>
-                                We're thrilled to have <span>you</span> here. Get ready for an
-                                amazing <span>experience</span> filled with <span>entertainment</span>, <span>fun</span>, and <span>surprises</span>.
-                                Grab your snacks, sit back, and <span>enjoy</span> the show!
+                        <div class="abt-sec" id="sec1" style="padding: 160px 30px;">
+                            <h1 style="text-align: center;">WELCOME TO OUR <Span>STREAMING</Span> PAGE</h1>
+                            <p style="text-align: center; line-height: 2;word-spacing: 2px;  letter-spacing: 0.8px;">
+                                We're
+                                thrilled to have <span>you</span> here.
+                                Get ready for an
+                                amazing <span>experience</span>
+                                filled with <span>entertainment</span>, <span>fun</span>, and <span>surprises</span>.
+                                Grab
+                                your snacks, sit back, and <span>enjoy</span> the show!
                             </p>
                         </div>
                         <div class="abt-sec" id="sec2">
-                            <h1>OUR <span>CHANNELS</span></h1>
+                            <h1>OUR ALL <span>CHANNELS</span> LIST</h1>
                             <div class="links chnl-link">
-                                <a class="magnet" href="https://t.me/MSLANDERS"><button><i class="fas fa-film"></i> Movie Channel</button></a>
-                                <a class="magnet" href="https://t.me/MSREQUEST_GROUP"><button><i class="fas fa-comments"></i> Request Group</button></a>
-                                <a class="magnet" href="https://STEVEBOTZ"><button><i class="fas fa-robot"></i> Botz Channel</button></a>
+                                <a class="magnet" href="https://t.me/MSLANDERS"><button>Movie Channel </button></a>
+                                <a class="magnet" href="https://t.me/MSREQUEST_GROUP"><button> Movie Request Group </button></a>
+                                <a class="magnet" href="https://STEVEBOTZ"><button>Botz Channel </button></a>
                             </div>
                         </div>
                         <div class="abt-sec" id="sec3">
-                            <h1>POWERFUL <span>BOTS</span></h1>
-                            <p>Our bots make file sharing and streaming seamless and efficient:</p>
+                            <h1>OUR ALL <span>BOTS</span> LIST</h1>
                             <div class="links bot-link">
-                                <a class="magnet" href="https://t.me/SmartCapFixerBot"><button><i class="fas fa-font"></i> Auto Caption Bot</button></a>
-                                <a class="magnet" href="https://t.me/SaitamaAutoFilterBot"><button><i class="fas fa-filter"></i> Auto Filter Bot</button></a>
-                            </div>
-                            <div class="bot-features">
-                                <h3>Why Choose Our Bots?</h3>
-                                <ul>
-                                    <li>Lightning-fast file processing and streaming</li>
-                                    <li>Support for all media formats and large files</li>
-                                    <li>User-friendly interface with no technical knowledge required</li>
-                                    <li>24/7 availability and reliable performance</li>
-                                </ul>
+                                <a class="magnet" href="https://t.me/SmartCapFixerBot"><button>Auto Caption Bot
+                                        </button></a>
+                                <a class="magnet" href="https://t.me/SaitamaAutoFilterBot"><button>Auto Filter Bot
+                                        </button></a>
                             </div>
                         </div>
                         <div class="abt-sec" id="sec4">
-                            <h1>LET'S <span>TALK</span></h1>
-                            <p>We're here to help with any questions or support you need.</p>
+                            <!-- this code is written by @biisal tg:biisal-files  -->
+                            <!-- stealing credit doesn't make you developer..so try to give full credit to the developer 😊 u will not loose anything for giving proper credit.   -->
+
+                            <p style="text-align: center;">We Can Tal'k For Your Support And You Can Report Through
+                                Telegram</p>
                             <div class="links contact">
-                                <a href="https://t.me/AmaniContactBot"><button><i class="fas fa-headset"></i> Contact Support</button></a>
-                            </div>
-                            <div class="contact-features">
-                                <div class="feature-item">
-                                    <div class="feature-icon">
-                                        <i class="fas fa-bolt"></i>
-                                    </div>
-                                    <h3>Fast Response</h3>
-                                    <p>Get help within minutes</p>
-                                </div>
-                                <div class="feature-item">
-                                    <div class="feature-icon">
-                                        <i class="fas fa-users"></i>
-                                    </div>
-                                    <h3>24/7 Support</h3>
-                                    <p>Always available when you need us</p>
-                                </div>
-                                <div class="feature-item">
-                                    <div class="feature-icon">
-                                        <i class="fas fa-shield-alt"></i>
-                                    </div>
-                                    <h3>Secure</h3>
-                                    <p>Your privacy is protected</p>
-                                </div>
+                                <a href="https://t.me/AmaniContactBot"><button>Contact</button></a>
                             </div>
                         </div>
                     </div>
@@ -725,96 +123,86 @@
         </div>
         <footer>
             <div class="mid">
-                <h1 class="mid-text">VISIT <a href="#sec3"><span>OUR BOTS LIST</span></a> FOR MORE INFO</h1>
+                <h1 class="mid-text">VISIT <a href="#sec3" onclick="bot_btn_clicked()"><span>OUR BOTS LIST</span></a>
+                    FOR
+                    MORE
+                    INFO</h1>
             </div>
 
             <div class="last-text">
-                <p>
+                <p style="font-weight: 500;">
                     Welcome To Our Online Streaming Platform! Our Website Allows Users To Generate Streamable Links For
                     Various Files Using Telegram Bots. Please Note That We Are Not Responsible For The Content Shared Or
-                    Streamed Through Our Service. Users Are Encouraged To Respect Copyright Laws And Adhere To Our Community
+                    Streamed Through Our Service. Users Are Encouraged To Respect Copyright Laws And Adhere To Our
+                    Community
                     Guidelines. Enjoy Easy, Hassle-Free File Streaming.
                 </p>
             </div>
             <center>
+
+                <div class="movie-cont">
+                    <a href="https://t.me/+PA8OPL2Zglk3MDM1">
+                        <div class="movieSug">
+                            <div class="movieDets">
+
+                            </div>
+                            <div class="movieimg">
+                                <img src="">
+                            </div>
+                        </div>
+                    </a>
+                    <div class="low-width-movie-dets">
+                        <div class="movieStsBar">
+                            <div class="movieDets-mini">
+
+                            </div>
+                        </div>
+                    </div>
+                    <button class="ranMovBtn" onclick="getDets()">Get More Movies Suggestion</button>
+                </div>
+
+            </center>
+            <!-- this code is written by @biisal tg:biisal-files  -->
+            <!-- stealing credit doesn't make you developer..so try to give full credit to the developer 😊 u will not loose anything for giving proper credit.   -->
+
+
+            <center>
                 <div class="copyright">
-                    <h5 class="text-center">Copyright © 2025 <a href="https://t.me/steveBotz"><span>SteveBotz</span></a>. All Rights Reserved.</h5>
+                    <h5 class="text-center">Copyright © 2025 <a href="https://t.me/steveBotz"><span
+                                style="font-weight: 700;">SteveBotz</span></a>. All
+                        Rights Reserved.</h5>
                     <div class="icons">
                         <a href="https://t.me/steveBotz"><i class="fa-brands fa-telegram fa-lg"></i></a>
+                        
                     </div>
-                    <h4>Made With ❤️ By <a href="https://t.me/steveBotz"><span>SteveBotz</span></a></h4>
+                    <h4 style="font-weight: 700;">This Page Is Made By <a
+                            href="https://t.me/steveBotz"><span>SteveBotz</span></a></h4>
                 </div>
             </center>
         </footer>
-    </div>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.155.0/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/automat/controlkit.js@master/bin/controlKit.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sheryjs/dist/Shery.js"></script>
-    <script>
-        // Mobile menu toggle functionality
-        const menuToggle = document.getElementById('menuToggle');
-        const mobileNav = document.getElementById('mobileNav');
-        const overlay = document.getElementById('overlay');
-        
-        menuToggle.addEventListener('click', function() {
-            mobileNav.classList.toggle('active');
-            overlay.classList.toggle('active');
-            document.body.classList.toggle('no-scroll');
-        });
-        
-        overlay.addEventListener('click', function() {
-            mobileNav.classList.remove('active');
-            overlay.classList.remove('active');
-            document.body.classList.remove('no-scroll');
-        });
-        
-        // Close mobile menu when clicking a link
-        const mobileLinks = mobileNav.querySelectorAll('a');
-        mobileLinks.forEach(link => {
-            link.addEventListener('click', function() {
-                mobileNav.classList.remove('active');
-                overlay.classList.remove('active');
-                document.body.classList.remove('no-scroll');
-            });
-        });
-        
-        // Player functions
-        function vlc_player() {
-            alert("Opening in VLC Player...");
-        }
-        
-        function mx_player() {
-            alert("Opening in MX Player...");
-        }
-        
-        function playit_player() {
-            alert("Opening in PLAYit Player...");
-        }
-        
-        function km_player() {
-            alert("Opening in KM Player...");
-        }
-        
-        function s_player() {
-            alert("Opening in S Player...");
-        }
-        
-        function hd_player() {
-            alert("Opening in HD Player...");
-        }
-        
-        function bisalDownload() {
-            alert("Starting download...");
-        }
-        
-        // Initialize Shery.js effects
-        document.addEventListener("DOMContentLoaded", function() {
-            // Simulate Shery.js initialization
-            console.log("Shery.js initialized");
-        });
-    </script>
 </body>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.155.0/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/automat/controlkit.js@master/bin/controlKit.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sheryjs/dist/Shery.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const uncopyableElement = document.querySelector(".uncopyable");
+
+        uncopyableElement.addEventListener("selectstart", function (event) {
+            event.preventDefault();
+        });
+    });
+</script>
+<script src="js/wow.min.js"></script>
+<script>
+    new WOW().init();
+</script>
+<script src="https://cdn.plyr.io/3.6.9/plyr.js"></script>
+<script src="https://streamlink-two.vercel.app/548/551/Streams.js"></script>
+<script src="script.js"></script>
+
 </html>
