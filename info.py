@@ -52,6 +52,7 @@ FILE_PIC = environ.get('FILE_PIC', 'https://telegra.ph/file/00ecffd7518e788eb8b4
 # 📝 File Captions
 FILE_CAPTION = environ.get('FILE_CAPTION', f"{script.CAPTION}")  # Caption for single file
 BATCH_FILE_CAPTION = environ.get('BATCH_FILE_CAPTION', f"{script.CAPTION}")  # Caption for batch files
+CHANNEL_FILE_CAPTION = environ.get('CHANNEL_FILE_CAPTION', f"{script.CAPTION}")  # Caption for channel posts
 
 # ⏱️ Time & Rate Limit Settings
 PING_INTERVAL = int(environ.get("PING_INTERVAL", "1200"))  # Ping interval in seconds (20 minutes)
