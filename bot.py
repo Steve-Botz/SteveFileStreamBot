@@ -1,10 +1,7 @@
-import os, sys, glob, pytz, asyncio, logging, importlib
+import os, sys, glob, pytz, asyncio, logging, importlib, time
 from pathlib import Path
 from pyrogram import idle
-
-#Dont Remove My Credit @AV_BOTz_UPDATE 
-#This Repo Is By @BOT_OWNER26 
-# For Any Kind Of Error Ask Us In Support Group @AV_SUPPORT_GROUP
+from aiohttp import web, ClientSession
 
 logging.basicConfig(
     level=logging.INFO,
@@ -18,26 +15,39 @@ from info import *
 from typing import Union, Optional, AsyncGenerator
 from Script import script 
 from datetime import date, datetime 
-from aiohttp import web
 from web import web_server, check_expired_premium
 from web.server import Webavbot
 from utils import temp, ping_server
 from web.server.clients import initialize_clients
-
-#Dont Remove My Credit @AV_BOTz_UPDATE 
-#This Repo Is By @BOT_OWNER26 
-# For Any Kind Of Error Ask Us In Support Group @AV_SUPPORT_GROUP
 
 ppath = "plugins/*.py"
 files = glob.glob(ppath)
 Webavbot.start()
 loop = asyncio.get_event_loop()
 
+async def koyeb_ping():
+    while True:
+        await asyncio.sleep(30)
+        try:
+            async with ClientSession() as session:
+                start_time = time.time()
+                async with session.get(URL) as resp:
+                    if resp.status == 200:
+                        elapsed = (time.time() - start_time) * 1000
+                        logging.info(f"Ping Successful ✅ | Status: {resp.status} | Response Time: {elapsed:.2f}ms")
+                    else:
+                        logging.warning(f"Ping Received Unexpected Status: {resp.status}")
+        except Exception as e:
+            logging.error(f"Ping Failed ❌: {str(e)}")
+
 async def start():
     print('\n')
     print('Initalizing Your Bot')
     bot_info = await Webavbot.get_me()
     await initialize_clients()
+    
+    asyncio.create_task(koyeb_ping())
+    
     for name in files:
         with open(name) as a:
             patt = Path(a.name)
@@ -49,11 +59,7 @@ async def start():
             spec.loader.exec_module(load)
             sys.modules["plugins." + plugin_name] = load
             print("Imported => " + plugin_name)
-
-#Dont Remove My Credit @AV_BOTz_UPDATE 
-#This Repo Is By @BOT_OWNER26 
-# For Any Kind Of Error Ask Us In Support Group @AV_SUPPORT_GROUP
-    
+            
     if ON_HEROKU:
         asyncio.create_task(ping_server())
     me = await Webavbot.get_me()
@@ -73,10 +79,6 @@ async def start():
     bind_address = "0.0.0.0"
     await web.TCPSite(app, bind_address, PORT).start()
     await idle()
-
-#Dont Remove My Credit @AV_BOTz_UPDATE 
-#This Repo Is By @BOT_OWNER26 
-# For Any Kind Of Error Ask Us In Support Group @AV_SUPPORT_GROUP
 
 if __name__ == '__main__':
     try:
