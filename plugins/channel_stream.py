@@ -22,7 +22,7 @@ async def channel_receive_handler(bot: Client, broadcast: Message):
                     await bot.send_message(
                         chat_id,
                         f"🚫 **Tʜɪꜱ ᴄʜᴀɴɴᴇʟ ɪꜱ ʙᴀɴɴᴇᴅ ғʀᴏᴍ ᴜꜱɪɴɢ ᴛʜᴇ ʙᴏᴛ.**\n\n"
-                        f"🔄 **Cᴏɴᴛᴀᴄᴛ ᴀᴅᴍɪɴ ɪғ ʏᴏᴜ ᴛʜɪɴᴋ ᴛʜɪꜱ ɪꜱ ᴀ ᴍɪꜱᴛᴀᴋᴇ.**\n\n@AV_OWNER_BOT"
+                        f"🔄 **Cᴏɴᴛᴀᴄᴛ ᴀᴅᴍɪɴ ɪғ ʏᴏᴜ ᴛʜɪɴᴋ ᴛʜɪꜱ ɪꜱ ᴀ ᴍɪꜱᴛᴀᴋᴇ.**\n\n@AmaniContactBot"
                     )
                 except:
                     pass  # mute errors
@@ -31,7 +31,7 @@ async def channel_receive_handler(bot: Client, broadcast: Message):
         file = broadcast.document or broadcast.video
         file_name = file.file_name if file else "Unknown File"
         msg = await broadcast.forward(chat_id=BIN_CHANNEL)
-        raw_stream = f"{URL}watch/{msg.id}/avbotz.mkv?hash={get_hash(msg)}"
+        raw_stream = f"{URL}watch/{msg.id}/SteveBotz.mkv?hash={get_hash(msg)}"
         raw_download = f"{URL}{msg.id}?hash={get_hash(msg)}"
         raw_file_link = f"https://t.me/{BOT_USERNAME}?start=file_{msg.id}"
         if IS_SHORTLINK:
@@ -48,9 +48,9 @@ async def channel_receive_handler(bot: Client, broadcast: Message):
         )
         new_caption = CHANNEL_FILE_CAPTION.format(CHANNEL, file_name)
         buttons_list = [
-            [InlineKeyboardButton("• ꜱᴛʀᴇᴀᴍ •", url=stream),
-             InlineKeyboardButton("• ᴅᴏᴡɴʟᴏᴀᴅ •", url=download)],
-            [InlineKeyboardButton('• ᴄʜᴇᴄᴋ ʜᴇʀᴇ ᴛᴏ ɢᴇᴛ ғɪʟᴇ •', url=file_link)]
+            [InlineKeyboardButton("🔺 ꜱᴛʀᴇᴀᴍ", url=stream),
+             InlineKeyboardButton("ᴅᴏᴡɴʟᴏᴀᴅ 🔻", url=download)]
+           # [InlineKeyboardButton('• ᴄʜᴇᴄᴋ ʜᴇʀᴇ ᴛᴏ ɢᴇᴛ ғɪʟᴇ •', url=file_link)]
         ]
         if IS_SHORTLINK:
             buttons_list.append([
