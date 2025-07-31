@@ -1,9 +1,11 @@
 import asyncio
+import os
 import random
 from web.utils.file_properties import get_hash
 from pyrogram import Client, filters, enums
-from info import BIN_CHANNEL, URL, CHANNEL, BOT_USERNAME, IS_SHORTLINK, HOW_TO_OPEN
-from utils import get_shortlink
+from info import BIN_CHANNEL, URL, CHANNEL, BOT_USERNAME, IS_SHORTLINK, CHANNEL_FILE_CAPTION, HOW_TO_OPEN
+from utils import get_size, get_shortlink
+from Script import script
 from database.users_db import db
 from pyrogram.errors import FloodWait
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
@@ -12,68 +14,66 @@ from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 async def channel_receive_handler(bot: Client, broadcast: Message):
     try:
         chat_id = broadcast.chat.id
-        
-        # Handle channel ban check
         if str(chat_id).startswith("-100"):
-            if await db.is_channel_blocked(chat_id):
+            is_banned = await db.is_channel_blocked(chat_id)
+            if is_banned:
+                block_data = await db.get_channel_block_data(chat_id)
                 try:
                     await bot.send_message(
                         chat_id,
-                        "🚫 **This channel is banned from using the bot.**\n\n"
-                        "🔄 **Contact admin if you think this is a mistake.**\n\n@AV_OWNER_BOT"
+                        f"🚫 **Tʜɪꜱ ᴄʜᴀɴɴᴇʟ ɪꜱ ʙᴀɴɴᴇᴅ ғʀᴏᴍ ᴜꜱɪɴɢ ᴛʜᴇ ʙᴏᴛ.**\n\n"
+                        f"🔄 **Cᴏɴᴛᴀᴄᴛ ᴀᴅᴍɪɴ ɪғ ʏᴏᴜ ᴛʜɪɴᴋ ᴛʜɪꜱ ɪꜱ ᴀ ᴍɪꜱᴛᴀᴋᴇ.**\n\n@AV_OWNER_BOT"
                     )
                 except:
-                    pass
+                    pass  # mute errors
                 await bot.leave_chat(chat_id)
                 return
-
-        # Generate file links before forwarding
-        file_id = f"{random.randint(1000000000, 9999999999)}"
-        raw_stream = f"{URL}watch/{file_id}/avbotz.mkv?hash={get_hash(file_id)}"
-        raw_download = f"{URL}{file_id}?hash={get_hash(file_id)}"
-        raw_file_link = f"https://t.me/{BOT_USERNAME}?start=file_{file_id}"
-
-        # Create buttons
+        file = broadcast.document or broadcast.video
+        file_name = file.file_name if file else "Unknown File"
+        msg = await broadcast.forward(chat_id=BIN_CHANNEL)
+        raw_stream = f"{URL}watch/{msg.id}/avbotz.mkv?hash={get_hash(msg)}"
+        raw_download = f"{URL}{msg.id}?hash={get_hash(msg)}"
+        raw_file_link = f"https://t.me/{BOT_USERNAME}?start=file_{msg.id}"
+        if IS_SHORTLINK:
+            stream = await get_shortlink(raw_stream)
+            download = await get_shortlink(raw_download)
+            file_link = await get_shortlink(raw_file_link)
+        else:
+            stream = raw_stream
+            download = raw_download
+            file_link = raw_file_link
+        await msg.reply_text(
+            text=f"**Channel Name:** `{broadcast.chat.title}`\n**CHANNEL ID:** `{broadcast.chat.id}`\n**Rᴇǫᴜᴇsᴛ ᴜʀʟ:** {stream}",
+            quote=True
+        )
+        new_caption = CHANNEL_FILE_CAPTION.format(CHANNEL, file_name)
         buttons_list = [
-            [InlineKeyboardButton("🔺 ꜱᴛʀᴇᴀᴍ", url=await get_shortlink(raw_stream) if IS_SHORTLINK else raw_stream),
-             InlineKeyboardButton("ᴅᴏᴡɴʟᴏᴀᴅ 🔻", url=await get_shortlink(raw_download) if IS_SHORTLINK else raw_download)]
-         #   [InlineKeyboardButton('• ᴄʜᴇᴄᴋ ʜᴇʀᴇ ᴛᴏ ɢᴇᴛ ғɪʟᴇ •', url=await get_shortlink(raw_file_link) if IS_SHORTLINK else raw_file_link)]
+            [InlineKeyboardButton("• ꜱᴛʀᴇᴀᴍ •", url=stream),
+             InlineKeyboardButton("• ᴅᴏᴡɴʟᴏᴀᴅ •", url=download)],
+            [InlineKeyboardButton('• ᴄʜᴇᴄᴋ ʜᴇʀᴇ ᴛᴏ ɢᴇᴛ ғɪʟᴇ •', url=file_link)]
         ]
-        
         if IS_SHORTLINK:
             buttons_list.append([
                 InlineKeyboardButton("• ʜᴏᴡ ᴛᴏ ᴏᴘᴇɴ •", url=HOW_TO_OPEN)
             ])
-            
         buttons = InlineKeyboardMarkup(buttons_list)
-
-        # Add buttons to original message
-        await bot.edit_message_reply_markup(
+        await bot.edit_message_caption(
             chat_id=broadcast.chat.id,
             message_id=broadcast.id,
-            reply_markup=buttons
-        )
-
-        # Forward to bin channel after adding buttons
-        msg = await broadcast.forward(BIN_CHANNEL)
-        await msg.reply_text(
-            text=f"**Channel Name:** `{broadcast.chat.title}`\n"
-                 f"**CHANNEL ID:** `{broadcast.chat.id}`\n"
-                 f"**File ID:** `{file_id}`",
-            quote=True
+            caption=new_caption,
+            reply_markup=buttons,
+            parse_mode=enums.ParseMode.HTML
         )
 
     except asyncio.exceptions.TimeoutError:
+        print("Request Timed Out! Retrying...")
         await asyncio.sleep(5)
         await channel_receive_handler(bot, broadcast)
 
     except FloodWait as w:
+        print(f"Sleeping for {w.value}s due to FloodWait")
         await asyncio.sleep(w.value)
 
     except Exception as e:
-        print(f"Error processing file: {e}")
-        await bot.send_message(
-            BIN_CHANNEL,
-            f"❌ **Channel Handler Error:**\n`{e}`",
-            disable_web_page_preview=True
-        )
+        await bot.send_message(chat_id=BIN_CHANNEL, text=f"❌ **Error:** `{e}`", disable_web_page_preview=True)
+        print(f"❌ Can't edit channel message! Error: {e}")
