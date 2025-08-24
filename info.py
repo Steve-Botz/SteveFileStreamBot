@@ -18,7 +18,7 @@ ADMINS = list(map(int, environ.get('ADMINS', '6317211079').split()))
 AUTH_CHANNEL = list(map(int, environ.get("AUTH_CHANNEL", "-1002553442366").split()))
 
 OWNER_USERNAME = environ.get("OWNER_USERNAME", 'AmaniContactBot')
-BOT_USERNAME = environ.get("BOT_USERNAME", 'FilesToLinkPro_bot')
+BOT_USERNAME = environ.get("BOT_USERNAME", '')
 
 CHANNEL = environ.get('CHANNEL', 'https://t.me/steveBotz')
 SUPPORT = environ.get('SUPPORT', 'https://t.me/SteveBotzSupport')
@@ -76,10 +76,10 @@ else:
 
 # 🌐 Server Settings
 PORT = int(getenv('PORT', '2626'))  # Port for web server
-NO_PORT = str(getenv("NO_PORT", True)).lower() in ("true", "1", "yes")  # Disable port in URL
-HAS_SSL = str(getenv("HAS_SSL", True)).lower() in ("true", "1", "yes")  # Use HTTPS if True
+NO_PORT = str(getenv("NO_PORT", False)).lower() in ("true", "1", "yes")  # Disable port in URL
+HAS_SSL = str(getenv("HAS_SSL", False)).lower() in ("true", "1", "yes")  # Use HTTPS if True
 BIND_ADDRESS = getenv("WEB_SERVER_BIND_ADDRESS", "127.0.0.1")  # Server bind address
 FQDN = getenv("FQDN", "") or BIND_ADDRESS  # Full domain name or fallback to bind address
-PORT_SEGMENT = "" if NO_PORT else f":{PORT}"  # Port in URL if not disabled
+PORT_SEGMENT = "" if NO_PORT else f":{PORT}/"  # Port in URL if not disabled
 PROTOCOL = "https" if HAS_SSL else "http"  # Protocol for URL
 URL = f"{PROTOCOL}://{FQDN}{PORT_SEGMENT}"  # Final generated base URL
